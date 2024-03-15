@@ -1,11 +1,12 @@
 package br.com.dbc.vemser.iShirts.dto.usuario;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
 public class UsuarioCreateDTO {
 
     @NotBlank
-    //@Schema(description = "E-mail do Usuário", required = true, example = "cliente@dbccompany.com.br")
+    @Schema(description = "E-mail do Usuário", required = true, example = "cliente@dbccompany.com.br")
     private String email;
 
     @NotBlank
