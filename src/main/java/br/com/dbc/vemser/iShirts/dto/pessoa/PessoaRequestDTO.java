@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class PessoaDTO {
+public class PessoaRequestDTO {
 
     @NotNull
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
