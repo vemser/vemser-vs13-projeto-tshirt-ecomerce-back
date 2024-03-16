@@ -1,10 +1,12 @@
 package br.com.dbc.vemser.iShirts.model;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
+@Entity
 @Table(name = "PESSOA")
 public class Pessoa {
 
