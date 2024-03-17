@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.iShirts.dto.usuario;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import javax.validation.constraints.*;
 
 public class UsuarioCreateDTO {
 

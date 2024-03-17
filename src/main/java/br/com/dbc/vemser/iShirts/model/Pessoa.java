@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.iShirts.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
