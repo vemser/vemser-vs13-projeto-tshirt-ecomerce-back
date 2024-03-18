@@ -2,7 +2,7 @@ package br.com.dbc.vemser.iShirts.controller;
 
 import br.com.dbc.vemser.iShirts.controller.interfaces.FotoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
-import br.com.dbc.vemser.iShirts.exception.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.service.FotoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

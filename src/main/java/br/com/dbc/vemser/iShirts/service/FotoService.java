@@ -2,7 +2,7 @@ package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.model.Foto;
-import br.com.dbc.vemser.iShirts.exception.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.repository.FotoRepository;
 import br.com.dbc.vemser.iShirts.utils.MediaTypeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;

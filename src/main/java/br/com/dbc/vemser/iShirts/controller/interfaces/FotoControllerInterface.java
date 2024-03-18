@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.iShirts.controller.interfaces;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
-import br.com.dbc.vemser.iShirts.exception.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
