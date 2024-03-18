@@ -1,14 +1,16 @@
 package br.com.dbc.vemser.iShirts.model;
-import jakarta.persistence.*;
+
+
+import javax.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 @Table(name = "USUARIO")
-public class Usuario{ //implements UserDetails
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USUARIO")
     @SequenceGenerator(name = "SEQ_USUARIO", sequenceName = "SEQ_USUARIO", allocationSize = 1)
@@ -21,4 +23,3 @@ public class Usuario{ //implements UserDetails
     @Column(name = "SENHA", nullable = false)
     private String senha;
 }
-
