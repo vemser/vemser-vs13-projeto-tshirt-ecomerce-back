@@ -1,6 +1,8 @@
 package br.com.dbc.vemser.iShirts.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -36,6 +38,7 @@ public class Pessoa {
     private String celular;
 
     @Column(name = "DATA_NASCIMENTO")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dataNascimento;
 
     @Column(name = "PREFERENCIA", nullable = false)

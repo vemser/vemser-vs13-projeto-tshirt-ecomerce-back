@@ -21,7 +21,12 @@ public class PessoaService {
     private final PessoaRepository pessoaRepository;
     private final ObjectMapper objectMapper;
 
-    public Pessoa criarPessoa(PessoaCreateDTO pessoaCreateDTO) {
+    private static final String CPF_INVALIDO = "CPF inválido";
+    private static final String CPF_EXISTENTE = "CPF já existente";
+    private static final String DATA_NASCIMENTO_FUTURA = "A data de nascimento não pode estar no futuro";
+    private static final String ID_NAO_ENCONTRADO = "ID não encontrado";
+
+    public Pessoa cadastrarPessoa(PessoaCreateDTO pessoaCreateDTO) {
         validarPessoa(pessoaCreateDTO);
 
         Pessoa pessoa = objectMapper.convertValue(pessoaCreateDTO, Pessoa.class);
@@ -66,30 +71,35 @@ public class PessoaService {
     }
 
     public Pessoa buscarPessoaPorId(Integer idPessoa) {
-        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException("ID não encontrado"));
+        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
     }
 
     public void deletarPessoa(Integer idPessoa) {
         if (!pessoaRepository.existsById(idPessoa)) {
-            throw new RuntimeException("ID não encontrado");
+            throw new RuntimeException(ID_NAO_ENCONTRADO);
         }
 
         pessoaRepository.deleteById(idPessoa);
     }
 
+    public Pessoa buscarPessoaPorCpf(String cpf) {
+        return pessoaRepository.findByCpf(cpf)
+                .orElseThrow(() -> new RuntimeException(CPF_INVALIDO));
+    }
+
     private Pessoa existID(Integer idPessoa) {
-        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException("ID não encontrado"));
+        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
     }
 
     private void validarPessoa(PessoaCreateDTO pessoaCreateDTO) {
         if (pessoaCreateDTO.getCpf() != null && pessoaCreateDTO.getCpf().length() != 11) {
-            throw new IllegalArgumentException("CPF inválido");
+            throw new IllegalArgumentException(CPF_INVALIDO);
         }
         if (pessoaCreateDTO.getDataNascimento() != null && pessoaCreateDTO.getDataNascimento().after(new Date())) {
-            throw new IllegalArgumentException("A data de nascimento não pode estar no futuro");
+            throw new IllegalArgumentException(DATA_NASCIMENTO_FUTURA);
         }
         if (pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())) {
-            throw new IllegalArgumentException("CPF já existente");
+            throw new IllegalArgumentException(CPF_EXISTENTE);
         }
     }
 
