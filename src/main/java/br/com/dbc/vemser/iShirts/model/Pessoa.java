@@ -2,6 +2,8 @@ package br.com.dbc.vemser.iShirts.model;
 
 import javax.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -43,8 +45,10 @@ public class Pessoa {
     private String ativo;
 
     @Column(name = "CRIADO", columnDefinition="TIMESTAMP")
+    @CreationTimestamp
     private Date criado;
 
+    @UpdateTimestamp
     @Column(name = "EDITADO", columnDefinition="TIMESTAMP")
     private Date editado;
 
