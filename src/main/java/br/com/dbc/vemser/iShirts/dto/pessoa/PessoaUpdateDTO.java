@@ -35,6 +35,4 @@ public class PessoaUpdateDTO {
     @Schema(description = "Status ativo da pessoa", example = "1")
     private String ativo;
 
-    private EnderecoCreateDTO endereco;
-
 }

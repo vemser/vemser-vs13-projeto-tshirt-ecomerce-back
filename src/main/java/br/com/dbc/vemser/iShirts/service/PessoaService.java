@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
+import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Endereco;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
@@ -43,52 +44,19 @@ public class PessoaService {
         pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
         pessoa.setAtivo(pessoaCreateDTO.getAtivo());
 
-        Endereco endereco = new Endereco();
-
-        endereco.setLogradouro(pessoaCreateDTO.getEndereco().getLogradouro());
-        endereco.setNumero(pessoaCreateDTO.getEndereco().getNumero());
-        endereco.setComplemento(pessoaCreateDTO.getEndereco().getComplemento());
-        endereco.setReferencia(pessoaCreateDTO.getEndereco().getReferencia());
-        endereco.setBairro(pessoaCreateDTO.getEndereco().getBairro());
-        endereco.setCep(pessoaCreateDTO.getEndereco().getCep());
-        endereco.setEstado(pessoaCreateDTO.getEndereco().getEstado());
-        endereco.setPais(pessoaCreateDTO.getEndereco().getPais());
-
-        endereco.setPessoa(pessoa);
-
-        Endereco enderecoSalvo = enderecoRepository.save(endereco);
-
-        pessoa.setEndereco(enderecoSalvo);
-
         return pessoaRepository.save(pessoa);
     }
 
-    public Pessoa atualizarPessoa(Integer idPessoa, PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException {
+    public Pessoa atualizarPessoa(Integer idPessoa, PessoaUpdateDTO pessoaUpdateDTO) {
         Pessoa pessoa = existID(idPessoa);
 
-        validarPessoa(pessoaCreateDTO);
-
-        pessoa.setNome(pessoaCreateDTO.getNome());
-        pessoa.setSobrenome(pessoaCreateDTO.getSobrenome());
-        pessoa.setCpf(pessoaCreateDTO.getCpf());
-        pessoa.setCelular(pessoaCreateDTO.getCelular());
-        pessoa.setDataNascimento(pessoaCreateDTO.getDataNascimento());
-        pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
-        pessoa.setAtivo(pessoaCreateDTO.getAtivo());
-
-        Endereco endereco = pessoa.getEndereco();
-        if (endereco != null) {
-            endereco.setLogradouro(pessoaCreateDTO.getEndereco().getLogradouro());
-            endereco.setNumero(pessoaCreateDTO.getEndereco().getNumero());
-            endereco.setComplemento(pessoaCreateDTO.getEndereco().getComplemento());
-            endereco.setReferencia(pessoaCreateDTO.getEndereco().getReferencia());
-            endereco.setBairro(pessoaCreateDTO.getEndereco().getBairro());
-            endereco.setCep(pessoaCreateDTO.getEndereco().getCep());
-            endereco.setEstado(pessoaCreateDTO.getEndereco().getEstado());
-            endereco.setPais(pessoaCreateDTO.getEndereco().getPais());
-
-            enderecoRepository.save(endereco);
-        }
+        pessoa.setNome(pessoaUpdateDTO.getNome());
+        pessoa.setSobrenome(pessoaUpdateDTO.getSobrenome());
+        pessoa.setCpf(pessoaUpdateDTO.getCpf());
+        pessoa.setCelular(pessoaUpdateDTO.getCelular());
+        pessoa.setDataNascimento(pessoaUpdateDTO.getDataNascimento());
+        pessoa.setPreferencia(pessoaUpdateDTO.getPreferencia());
+        pessoa.setAtivo(pessoaUpdateDTO.getAtivo());
 
         try {
             return pessoaRepository.save(pessoa);

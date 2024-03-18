@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.controller;
 
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
+import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.service.PessoaService;
@@ -45,7 +46,7 @@ public class PessoaController {
     }
 
     @PutMapping("/atualizar/{idPessoa}")
-    public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Integer idPessoa, @RequestBody PessoaCreateDTO pessoaDTO) throws RegraDeNegocioException {
+    public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Integer idPessoa, @RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException {
         Pessoa pessoaAtualizada = pessoaService.atualizarPessoa(idPessoa, pessoaDTO);
         return new ResponseEntity<>(pessoaAtualizada, HttpStatus.OK);
     }
