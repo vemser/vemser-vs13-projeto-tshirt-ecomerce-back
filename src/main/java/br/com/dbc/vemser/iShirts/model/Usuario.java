@@ -2,6 +2,8 @@ package br.com.dbc.vemser.iShirts.model;
 
 
 import javax.persistence.*;
+
+import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import lombok.*;
 
 @AllArgsConstructor
@@ -22,4 +24,7 @@ public class Usuario {
 
     @Column(name = "SENHA", nullable = false)
     private String senha;
+
+    @Column(name = "ATIVO", nullable = false)
+    private Ativo ativo;
 }
