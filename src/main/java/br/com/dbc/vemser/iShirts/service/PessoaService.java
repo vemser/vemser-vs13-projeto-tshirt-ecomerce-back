@@ -24,7 +24,7 @@ public class PessoaService {
         pessoa.setDataNascimento(pessoaCreateDTO.getDataNascimento());
         pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
         pessoa.setAtivo(pessoaCreateDTO.getAtivo());
-        pessoa.setEndereco(pessoaCreateDTO.getEndereco());
+
 
         return pessoaRepository.save(pessoa);
     }

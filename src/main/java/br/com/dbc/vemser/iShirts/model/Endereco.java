@@ -11,8 +11,8 @@ import java.util.Date;
 @Table(name = "Endereco")
 public class Endereco {
     @Id
-    @SequenceGenerator(name = "SEQ_ENDERECO",sequenceName = "SEQ_ENDERECO",initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "SEQ_ENDERECO")
+    @SequenceGenerator(name = "SEQ_ENDERECO",sequenceName = "SEQ_ENDERECO",allocationSize = 1)
     @Column(name = "ID_ENDERECO")
     private Integer idEndereco;
 
@@ -20,7 +20,7 @@ public class Endereco {
     @JoinColumn(name = "id_pessoa",referencedColumnName = "id_pessoa")
     private Pessoa pessoa;
 
-    @Column(name = "idPessoa",updatable = false,insertable = false)
+    @Column(name = "id_Pessoa",updatable = false,insertable = false)
     private Integer idPessoa;
 
     @Column(name = "LOGRADOURO")
