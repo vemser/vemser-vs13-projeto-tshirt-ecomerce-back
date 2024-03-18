@@ -3,6 +3,7 @@ package br.com.dbc.vemser.iShirts.model;
 import javax.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -17,7 +18,7 @@ public class Pessoa {
     private Integer idPessoa;
 
     @OneToOne
-    @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO")
+    @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO", nullable = false)
     private Usuario usuario;
 
     @Column(name = "NOME", nullable = false)
@@ -39,12 +40,12 @@ public class Pessoa {
     private String preferencia;
 
     @Column(name = "ATIVO", nullable = false)
-    private char ativo;
+    private String ativo;
 
-    @Column(name = "CRIADO")
+    @Column(name = "CRIADO", columnDefinition="TIMESTAMP")
     private Date criado;
 
-    @Column(name = "EDITADO")
+    @Column(name = "EDITADO", columnDefinition="TIMESTAMP")
     private Date editado;
 
 }

@@ -35,9 +35,11 @@ public class PessoaCreateDTO {
     private Date dataNascimento;
 
     @NotNull
+    @Schema(description = "Preferência da pessoa", example = "Camisetas de banda", required = true)
     private String preferencia;
-    private char ativo;
-    private Date criado;
-    private Date editado;
+
+    @NotNull
+    @Schema(description = "Status ativo da pessoa", example = "1", required = true)
+    private String ativo;
 
 }
