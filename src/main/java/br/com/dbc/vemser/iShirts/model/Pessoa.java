@@ -44,6 +44,9 @@ public class Pessoa {
     @Column(name = "PREFERENCIA", nullable = false)
     private String preferencia;
 
+    @OneToMany(mappedBy = "pessoa")
+    private Endereco endereco;
+
     @Column(name = "ATIVO", nullable = false)
     private String ativo;
 
@@ -55,5 +58,5 @@ public class Pessoa {
     @Column(name = "EDITADO", columnDefinition="TIMESTAMP")
     private Date editado;
 
-    private String endereco;
+
 }
