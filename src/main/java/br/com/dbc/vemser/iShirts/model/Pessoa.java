@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,7 +41,7 @@ public class Pessoa {
     private String preferencia;
 
     @OneToMany(mappedBy = "pessoa")
-    private Endereco endereco;
+    private List<Endereco> endereco;
 
     @Column(name = "ATIVO", nullable = false)
     private String ativo;
