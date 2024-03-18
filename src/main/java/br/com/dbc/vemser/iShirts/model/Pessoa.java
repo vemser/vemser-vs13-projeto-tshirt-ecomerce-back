@@ -48,4 +48,5 @@ public class Pessoa {
     @Column(name = "EDITADO", columnDefinition="TIMESTAMP")
     private Date editado;
 
+    private String endereco;
 }
