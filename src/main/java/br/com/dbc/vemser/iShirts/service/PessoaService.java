@@ -1,7 +1,10 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.model.Endereco;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
+import br.com.dbc.vemser.iShirts.repository.EnderecoRepository;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.Date;
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
+    private final EnderecoRepository enderecoRepository;
     private final ObjectMapper objectMapper;
 
     private static final String CPF_INVALIDO = "CPF inválido";
@@ -26,7 +30,7 @@ public class PessoaService {
     private static final String DATA_NASCIMENTO_FUTURA = "A data de nascimento não pode estar no futuro";
     private static final String ID_NAO_ENCONTRADO = "ID não encontrado";
 
-    public Pessoa cadastrarPessoa(PessoaCreateDTO pessoaCreateDTO) {
+    public Pessoa cadastrarPessoa(PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException {
         validarPessoa(pessoaCreateDTO);
 
         Pessoa pessoa = objectMapper.convertValue(pessoaCreateDTO, Pessoa.class);
@@ -38,13 +42,30 @@ public class PessoaService {
         pessoa.setDataNascimento(pessoaCreateDTO.getDataNascimento());
         pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
         pessoa.setAtivo(pessoaCreateDTO.getAtivo());
-        pessoa.setEndereco(pessoaCreateDTO.getEndereco());
+
+        Endereco endereco = new Endereco();
+
+        endereco.setLogradouro(pessoaCreateDTO.getEndereco().getLogradouro());
+        endereco.setNumero(pessoaCreateDTO.getEndereco().getNumero());
+        endereco.setComplemento(pessoaCreateDTO.getEndereco().getComplemento());
+        endereco.setReferencia(pessoaCreateDTO.getEndereco().getReferencia());
+        endereco.setBairro(pessoaCreateDTO.getEndereco().getBairro());
+        endereco.setCep(pessoaCreateDTO.getEndereco().getCep());
+        endereco.setEstado(pessoaCreateDTO.getEndereco().getEstado());
+        endereco.setPais(pessoaCreateDTO.getEndereco().getPais());
+
+        endereco.setPessoa(pessoa);
+
+        Endereco enderecoSalvo = enderecoRepository.save(endereco);
+
+        pessoa.setEndereco(enderecoSalvo);
 
         return pessoaRepository.save(pessoa);
     }
 
-    public Pessoa atualizarPessoa(Integer idPessoa, PessoaCreateDTO pessoaCreateDTO) {
+    public Pessoa atualizarPessoa(Integer idPessoa, PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException {
         Pessoa pessoa = existID(idPessoa);
+
         validarPessoa(pessoaCreateDTO);
 
         pessoa.setNome(pessoaCreateDTO.getNome());
@@ -54,7 +75,20 @@ public class PessoaService {
         pessoa.setDataNascimento(pessoaCreateDTO.getDataNascimento());
         pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
         pessoa.setAtivo(pessoaCreateDTO.getAtivo());
-        pessoa.setEndereco(pessoaCreateDTO.getEndereco());
+
+        Endereco endereco = pessoa.getEndereco();
+        if (endereco != null) {
+            endereco.setLogradouro(pessoaCreateDTO.getEndereco().getLogradouro());
+            endereco.setNumero(pessoaCreateDTO.getEndereco().getNumero());
+            endereco.setComplemento(pessoaCreateDTO.getEndereco().getComplemento());
+            endereco.setReferencia(pessoaCreateDTO.getEndereco().getReferencia());
+            endereco.setBairro(pessoaCreateDTO.getEndereco().getBairro());
+            endereco.setCep(pessoaCreateDTO.getEndereco().getCep());
+            endereco.setEstado(pessoaCreateDTO.getEndereco().getEstado());
+            endereco.setPais(pessoaCreateDTO.getEndereco().getPais());
+
+            enderecoRepository.save(endereco);
+        }
 
         try {
             return pessoaRepository.save(pessoa);
@@ -63,14 +97,14 @@ public class PessoaService {
         }
     }
 
-    public Page<Pessoa> buscarTodasPessoas(Pageable pageable) {
+    public Page<Pessoa> buscarTodasPessoas(Pageable pageable) throws RegraDeNegocioException {
         Pageable pageableOrdenadoPorId = PageRequest.of(pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by("idPessoa"));
         return pessoaRepository.findAll(pageableOrdenadoPorId);
     }
 
-    public Pessoa buscarPessoaPorId(Integer idPessoa) {
+    public Pessoa buscarPessoaPorId(Integer idPessoa) throws RegraDeNegocioException {
         return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
     }
 
@@ -82,7 +116,7 @@ public class PessoaService {
         pessoaRepository.deleteById(idPessoa);
     }
 
-    public Pessoa buscarPessoaPorCpf(String cpf) {
+    public Pessoa buscarPessoaPorCpf(String cpf) throws RegraDeNegocioException {
         return pessoaRepository.findByCpf(cpf)
                 .orElseThrow(() -> new RuntimeException(CPF_INVALIDO));
     }

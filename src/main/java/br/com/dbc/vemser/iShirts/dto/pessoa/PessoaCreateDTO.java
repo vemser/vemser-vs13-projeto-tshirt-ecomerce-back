@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.dto.pessoa;
 
+import br.com.dbc.vemser.iShirts.dto.endereco.EnderecoCreateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -43,6 +44,6 @@ public class PessoaCreateDTO {
     @Schema(description = "Status ativo da pessoa", example = "1", required = true)
     private String ativo;
 
-    private String endereco;
+    private EnderecoCreateDTO endereco;
 
 }
