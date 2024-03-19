@@ -34,7 +34,7 @@ public class VariacaoCreateDTO {
     private Integer taxaDesconto;
 
     @NotNull(message = "O campo ativo não pode ser nulo")
-    private Boolean ativo;
+    private String ativo;
 
     @NotNull(message = "O campo criado não pode ser nulo")
     private Timestamp criado;

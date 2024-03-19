@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Getter
@@ -49,7 +48,7 @@ public class Variacao {
     private Integer taxaDesconto;
 
     @Column(name = "ATIVO")
-    private Boolean ativo;
+    private String ativo;
 
     @CreationTimestamp
     @Column(name = "CRIADO")

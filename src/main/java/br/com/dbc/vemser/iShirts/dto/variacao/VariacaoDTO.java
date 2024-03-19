@@ -25,7 +25,7 @@ public class VariacaoDTO {
 
     private Integer taxaDesconto;
 
-    private Boolean ativo;
+    private String ativo;
 
     private Timestamp criado;
 
