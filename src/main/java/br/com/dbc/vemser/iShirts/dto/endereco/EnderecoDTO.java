@@ -12,7 +12,6 @@ import java.util.Date;
 public class EnderecoDTO {
     private Integer idEndereco;
 
-    private Pessoa pessoa;
 
     private Integer idPessoa;
 
