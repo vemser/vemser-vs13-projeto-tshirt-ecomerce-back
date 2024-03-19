@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@Tag(name = "Foto")
+@Tag(name = "Foto", description = "Controller responsável pelas operações relacionadas à foto.")
 @Validated
 @RequestMapping("/foto")
 @RequiredArgsConstructor

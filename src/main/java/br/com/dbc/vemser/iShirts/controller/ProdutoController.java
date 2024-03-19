@@ -24,8 +24,9 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-@Tag(name = "Produtos", description = "Crud de produtos")
-public class ProdutoController implements ProdutoControllerInterface {
+
+@Tag(name = "Produto", description = "Controller responsável pelas operações relacionadas à produto.")
+public class ProdutoController {
 
     private final ProdutoService produtoService;
 
