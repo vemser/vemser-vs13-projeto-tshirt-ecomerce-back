@@ -34,6 +34,10 @@ public class PessoaService {
 
         Pessoa pessoa = objectMapper.convertValue(pessoaCreateDTO, Pessoa.class);
 
+        if (pessoa == null) {
+            pessoa = new Pessoa();
+        }
+
         pessoa.setNome(pessoaCreateDTO.getNome());
         pessoa.setSobrenome(pessoaCreateDTO.getSobrenome());
         pessoa.setCpf(pessoaCreateDTO.getCpf());

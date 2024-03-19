@@ -6,6 +6,8 @@ import javax.persistence.*;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import lombok.*;
 
+import java.util.Arrays;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -27,4 +29,5 @@ public class Usuario {
 
     @Column(name = "ATIVO", nullable = false)
     private Ativo ativo;
+
 }
