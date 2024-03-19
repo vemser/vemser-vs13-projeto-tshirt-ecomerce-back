@@ -4,6 +4,8 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
+
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
@@ -24,10 +26,9 @@ import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -41,7 +42,6 @@ public class PessoaServiceTest {
 
     @Mock
     private ObjectMapper objectMapper;
-
 
     @Mock
     private PessoaRepository pessoaRepository;
@@ -202,5 +202,71 @@ public class PessoaServiceTest {
         assertEquals(String.valueOf(Ativo.ATIVO.getIndex()), pessoa.getAtivo());
         verify(pessoaRepository).save(any(Pessoa.class));
 
+    }
+
+    @Tag("Teste_para_buscar_uma_Pessoa_por_CPF")
+    @Test
+    public void testarBuscarPessoaPorCpf() throws RegraDeNegocioException {
+        String cpf = "12345678901";
+        Pessoa pessoa = new Pessoa();
+        pessoa.setCpf(cpf);
+
+        when(pessoaRepository.findByCpf(cpf)).thenReturn(Optional.of(pessoa));
+
+        Pessoa result = pessoaService.buscarPessoaPorCpf(cpf);
+
+        assertEquals(pessoa, result);
+    }
+
+    @Test
+    public void testValidarPessoa() throws Exception {
+        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
+        pessoaCreateDTO.setCpf("12345678901"); // CPF válido
+
+        PessoaService pessoaService = new PessoaService(pessoaRepository, objectMapper);
+
+        Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
+
+        method.setAccessible(true);
+
+        method.invoke(pessoaService, pessoaCreateDTO);
+    }
+
+    @Tag("Teste_para_validar_uma_Pessoa_com_data_de_nascimento_futura")
+    @Test
+    public void testarValidarPessoaComDataNascimentoFutura() throws Exception {
+        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        pessoaCreateDTO.setDataNascimento(cal.getTime());
+
+        Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
+
+        method.setAccessible(true);
+
+        InvocationTargetException exception = assertThrows(InvocationTargetException.class, () -> {
+            method.invoke(pessoaService, pessoaCreateDTO);
+        });
+
+        assertTrue(exception.getCause() instanceof IllegalArgumentException);
+    }
+
+    @Tag("Teste_para_validar_uma_Pessoa_com_CPF_existente")
+    @Test
+    public void testarValidarPessoaComCpfExistente() throws Exception {
+        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
+        pessoaCreateDTO.setCpf("12345678901"); // CPF válido
+
+        when(pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())).thenReturn(true); // Simula que o CPF já existe
+
+        Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
+
+        method.setAccessible(true);
+
+        InvocationTargetException exception = assertThrows(InvocationTargetException.class, () -> {
+            method.invoke(pessoaService, pessoaCreateDTO);
+        });
+
+        assertTrue(exception.getCause() instanceof IllegalArgumentException);
     }
 }
