@@ -21,7 +21,7 @@ public class FotoService {
     private final MediaTypeUtil mediaTypeUtil;
     private final ObjectMapper objectMapper;
 
-    public FotoDTO createFoto(MultipartFile arquivo) throws RegraDeNegocioException, IOException {
+    public FotoDTO criar(MultipartFile arquivo) throws RegraDeNegocioException, IOException {
 
         Foto fotoEntity = gerarFoto(arquivo);
         fotoEntity = fotoRepository.save(fotoEntity);
@@ -30,9 +30,9 @@ public class FotoService {
         return fotoDTO;
     }
 
-    public FotoDTO update(Integer idFoto, MultipartFile arquivo) throws RegraDeNegocioException, IOException {
+    public FotoDTO atualizar(Integer idFoto, MultipartFile arquivo) throws RegraDeNegocioException, IOException {
 
-        Foto fotoEntity = findById(idFoto);
+        Foto fotoEntity = buscarPorId(idFoto);
         Foto fotoUpdate = gerarFoto(arquivo);
 
         fotoEntity.setArquivo(fotoUpdate.getArquivo());
@@ -44,19 +44,19 @@ public class FotoService {
     }
 
 
-    public FotoDTO getById(Integer idFoto) throws RegraDeNegocioException {
-        Foto foto = findById(idFoto);
+    public FotoDTO obterPorId(Integer idFoto) throws RegraDeNegocioException {
+        Foto foto = buscarPorId(idFoto);
         FotoDTO fotoDTO = objectMapper.convertValue(foto, FotoDTO.class);
         return fotoDTO;
     }
 
-    public void delete(Integer idFoto) throws RegraDeNegocioException {
-        Foto foto = findById(idFoto);
+    public void deletar(Integer idFoto) throws RegraDeNegocioException {
+        Foto foto = buscarPorId(idFoto);
 
         fotoRepository.delete(foto);
     }
 
-    public Foto findById(Integer idFoto) throws RegraDeNegocioException {
+    public Foto buscarPorId(Integer idFoto) throws RegraDeNegocioException {
         return fotoRepository.findById(idFoto)
                 .orElseThrow(() -> new RegraDeNegocioException("Imagem não encontrada!"));
     }

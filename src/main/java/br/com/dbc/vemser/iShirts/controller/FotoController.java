@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
-import br.com.dbc.vemser.iShirts.controller.interfaces.FotoControllerInterface;
+import br.com.dbc.vemser.iShirts.controller.documentacaoInterface.FotoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.service.FotoService;
@@ -23,24 +23,24 @@ public class FotoController implements FotoControllerInterface {
     private final FotoService fotoService;
 
     @PostMapping
-    public ResponseEntity<FotoDTO> createFoto(@RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException {
-        return new ResponseEntity<>(fotoService.createFoto(arquivo), HttpStatus.CREATED);
+    public ResponseEntity<FotoDTO> criarFoto(@RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException {
+        return new ResponseEntity<>(fotoService.criar(arquivo), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idFoto}")
-    public ResponseEntity<FotoDTO> update(@PathVariable("idFoto") Integer idFoto,
+    public ResponseEntity<FotoDTO> atualizarFoto(@PathVariable("idFoto") Integer idFoto,
                                           @RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException {
-        return new ResponseEntity<>(fotoService.update(idFoto, arquivo), HttpStatus.OK);
+        return new ResponseEntity<>(fotoService.atualizar(idFoto, arquivo), HttpStatus.OK);
     }
 
     @GetMapping("/{idFoto}")
-    public ResponseEntity<FotoDTO> getById(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException {
-        return new ResponseEntity<>(fotoService.getById(idFoto), HttpStatus.OK);
+    public ResponseEntity<FotoDTO> obterFotoPorId(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException {
+        return new ResponseEntity<>(fotoService.obterPorId(idFoto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{idFoto}")
-    public ResponseEntity<Void> delete(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException {
-        fotoService.delete(idFoto);
+    public ResponseEntity<Void> deletarFoto(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException {
+        fotoService.deletar(idFoto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

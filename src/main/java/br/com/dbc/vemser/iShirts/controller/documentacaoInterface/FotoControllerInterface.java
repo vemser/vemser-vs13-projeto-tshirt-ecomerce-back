@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.iShirts.controller.interfaces;
+package br.com.dbc.vemser.iShirts.controller.documentacaoInterface;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
@@ -21,7 +21,7 @@ public interface FotoControllerInterface {
             }
     )
     @PostMapping
-    ResponseEntity<FotoDTO> createFoto(@RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException;
+    ResponseEntity<FotoDTO> criarFoto(@RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException;
 
     @Operation(summary = "Atualizar uma foto", description = "Atualiza uma foto no banco de dados, formatos suportados: WEBP, JPG, JPEG, GIF, PNG, BMP")
     @ApiResponses(
@@ -32,7 +32,7 @@ public interface FotoControllerInterface {
             }
     )
     @PutMapping("/{idFoto}")
-    public ResponseEntity<FotoDTO> update(@PathVariable("idFoto") Integer idFoto,
+    public ResponseEntity<FotoDTO> atualizarFoto(@PathVariable("idFoto") Integer idFoto,
                                           @RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException;
 
     @Operation(summary = "Buscar uma foto por ID", description = "Busca uma foto por ID no banco de dados")
@@ -44,7 +44,7 @@ public interface FotoControllerInterface {
             }
     )
     @GetMapping("/{idFoto}")
-    ResponseEntity<FotoDTO> getById(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException;
+    ResponseEntity<FotoDTO> obterFotoPorId(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException;
 
 
     @Operation(summary = "Deletar uma foto", description = "Deleta uma foto no banco de dados")
@@ -56,5 +56,5 @@ public interface FotoControllerInterface {
             }
     )
     @DeleteMapping("/{idFoto}")
-    ResponseEntity<Void> delete(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException;
+    ResponseEntity<Void> deletarFoto(@PathVariable("idFoto") Integer idFoto) throws RegraDeNegocioException;
 }
