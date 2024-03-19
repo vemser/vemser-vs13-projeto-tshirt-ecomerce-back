@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.EnderecoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.endereco.EnderecoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.endereco.EnderecoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
@@ -17,8 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/endereco")
 @RequiredArgsConstructor
-
-public class EnderecoController {
+public class EnderecoController implements EnderecoControllerInterface {
 
     private final EnderecoService enderecoService;
 
