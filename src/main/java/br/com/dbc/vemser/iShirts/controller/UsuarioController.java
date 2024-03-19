@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.UsuarioControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequestMapping("/usuario")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerInterface {
 
     @Autowired
     private UsuarioService usuarioService;

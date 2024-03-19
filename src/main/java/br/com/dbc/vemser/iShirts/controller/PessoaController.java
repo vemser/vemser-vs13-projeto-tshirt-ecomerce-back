@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
-import br.com.dbc.vemser.iShirts.controller.documentacaoInterface.PessoaControllerInterface;
+import br.com.dbc.vemser.iShirts.controller.interfaces.PessoaControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;

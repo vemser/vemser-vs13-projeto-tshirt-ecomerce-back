@@ -8,6 +8,7 @@ import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UsuarioService {
+
+    private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    private static final String MSG_USUARIO_NAO_ENCONTRADO_INATIVO = "Usuário não encontrado ou já está inativo";
+    private static final String MSG_EMAIL_SENHA_OBRIGATORIOS = "E-mail e senha são obrigatórios";
+    private static final String MSG_EMAIL_INVALIDO = "E-mail Inválido";
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -26,64 +33,73 @@ public class UsuarioService {
 
     public List<UsuarioDTO> listarUsuariosInativos() throws RegraDeNegocioException {
         List<Usuario> usuariosInativos = usuarioRepository.findByAtivo(Ativo.INATIVO);
-        if (usuariosInativos.isEmpty()) {
-            throw new RegraDeNegocioException("Nenhum usuário Inativo encontrado");
-        }
+        verificarListaUsuariosVazia(usuariosInativos, MSG_USUARIO_NAO_ENCONTRADO_INATIVO);
         return usuariosInativos.stream()
-                .map(this::convertToUsuarioDTOWithId)
+                .map(this::converterParaUsuarioDTOComId)
                 .collect(Collectors.toList());
     }
+
     public List<UsuarioDTO> listarUsuarios() throws RegraDeNegocioException {
         List<Usuario> usuarios = usuarioRepository.findAllByAtivo(Ativo.ATIVO);
-        if (usuarios.isEmpty()) {
-            throw new RegraDeNegocioException("Nenhum usuário encontrado");
-        }
+        verificarListaUsuariosVazia(usuarios, MSG_USUARIO_NAO_ENCONTRADO);
         return usuarios.stream()
-                .map(this::convertToUsuarioDTOWithId)
+                .map(this::converterParaUsuarioDTOComId)
                 .collect(Collectors.toList());
+    }
+
+    private void verificarListaUsuariosVazia(List<Usuario> usuarios, String mensagemErro) throws RegraDeNegocioException {
+        if (usuarios.isEmpty()) {
+            throw new RegraDeNegocioException(mensagemErro);
+        }
     }
 
     public UsuarioDTO buscarUsuarioPorId(Integer id) throws RegraDeNegocioException {
-        Optional<Usuario> usuario = usuarioRepository.findByIdUsuarioAndAtivo(id, Ativo.ATIVO);
-        if (usuario.isEmpty()) {
-            throw new RegraDeNegocioException("Usuário não encontrado");
-        }
-        return convertToUsuarioDTOWithId(usuario.get());
-    }
-
-    public UsuarioDTO criarUsuario(UsuarioCreateDTO usuario) throws RegraDeNegocioException {
-        if (usuario.getEmail() == null || usuario.getSenha() == null) {
-            throw new RegraDeNegocioException("E-mail e senha são obrigatórios");
-        }
-
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new RegraDeNegocioException("E-mail Inválido");
-        }
-
-        Usuario novoUsuario = CreatetoUsuario(usuario);
-        novoUsuario.setAtivo(Ativo.ATIVO);
-        usuarioRepository.save(novoUsuario);
-        return convertToUsuarioDTOWithId(novoUsuario);
+        Optional<Usuario> usuarioOptional = getUsuarioAtivoById(id);
+        Usuario usuario = usuarioOptional.orElseThrow(() -> new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO));
+        return converterParaUsuarioDTOComId(usuario);
     }
 
     public UsuarioDTO atualizarUsuario(Integer id, UsuarioUpdateDTO usuarioAtualizado) throws RegraDeNegocioException {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findByIdUsuarioAndAtivo(id, Ativo.ATIVO);
-        if (usuarioOptional.isPresent()) {
-            if (!usuarioOptional.get().getEmail().equals(usuarioAtualizado.getEmail())
-                    && usuarioRepository.existsByEmailAndAtivo(usuarioAtualizado.getEmail(), Ativo.ATIVO)) {
-                throw new RegraDeNegocioException("E-mail Inválido");
-            }
+        Usuario usuarioAtualizadoEntidade = getUsuarioAtivoById(id)
+                .orElseThrow(() -> new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO));
 
-            Usuario usuarioAtualizadoEntidade = UpdatetoUsuario(usuarioAtualizado);
-            usuarioAtualizadoEntidade.setIdUsuario(usuarioOptional.get().getIdUsuario());
-            usuarioAtualizadoEntidade.setAtivo(Ativo.ATIVO);
-            usuarioRepository.save(usuarioAtualizadoEntidade);
-            return convertToUsuarioDTOWithId(usuarioAtualizadoEntidade);
-        } else {
-            throw new RegraDeNegocioException("Usuário não encontrado");
+        if (usuarioRepository.existsByEmailAndAtivo(usuarioAtualizado.getEmail(), Ativo.ATIVO)) {
+            throw new RegraDeNegocioException(MSG_EMAIL_INVALIDO);
         }
+
+        usuarioAtualizadoEntidade = updateParaUsuario(usuarioAtualizado, usuarioAtualizadoEntidade);
+        usuarioAtualizadoEntidade.setAtivo(Ativo.ATIVO);
+        usuarioRepository.save(usuarioAtualizadoEntidade);
+        return converterParaUsuarioDTOComId(usuarioAtualizadoEntidade);
     }
 
+    private Optional<Usuario> getUsuarioAtivoById(Integer id) throws RegraDeNegocioException {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByIdUsuarioAndAtivo(id, Ativo.ATIVO);
+        if (usuarioOptional.isEmpty()) {
+            throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO);
+        }
+        return usuarioOptional;
+    }
+
+    public UsuarioDTO criarUsuario(UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+        validarDadosUsuarioCreate(usuario);
+        verificarExistenciaEmail(usuario.getEmail());
+
+        Usuario novoUsuario = createParaUsuario(usuario);
+        novoUsuario.setAtivo(Ativo.ATIVO);
+        usuarioRepository.save(novoUsuario);
+        return converterParaUsuarioDTOComId(novoUsuario);
+    }
+    private void validarDadosUsuarioCreate(UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+        if (usuario.getEmail() == null || usuario.getSenha() == null) {
+            throw new RegraDeNegocioException(MSG_EMAIL_SENHA_OBRIGATORIOS);
+        }
+    }
+    private void verificarExistenciaEmail(String email) throws RegraDeNegocioException {
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new RegraDeNegocioException(MSG_EMAIL_INVALIDO);
+        }
+    }
 
     public void deletarUsuario(Integer id) throws RegraDeNegocioException {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
@@ -93,22 +109,26 @@ public class UsuarioService {
                 usuario.setAtivo(Ativo.INATIVO);
                 usuarioRepository.save(usuario);
             } else {
-                throw new RegraDeNegocioException("Usuário já está inativo");
+                throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO_INATIVO);
             }
         } else {
-            throw new RegraDeNegocioException("Usuário não encontrado");
+            throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO);
         }
     }
 
-    private UsuarioDTO convertToUsuarioDTOWithId(Usuario entity) {
+    private UsuarioDTO converterParaUsuarioDTOComId(Usuario entity) {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(entity, UsuarioDTO.class);
         usuarioDTO.setId(entity.getIdUsuario());
         return usuarioDTO;
     }
-    public Usuario UpdatetoUsuario(UsuarioUpdateDTO entity) {
-        return objectMapper.convertValue(entity, Usuario.class);
+
+    private Usuario updateParaUsuario(UsuarioUpdateDTO entity, Usuario usuario) {
+        Usuario usuarioAtualizado = objectMapper.convertValue(entity, Usuario.class);
+        usuarioAtualizado.setIdUsuario(usuario.getIdUsuario());
+        return usuarioAtualizado;
     }
-    public Usuario CreatetoUsuario(UsuarioCreateDTO entity) {
+
+    private Usuario createParaUsuario(UsuarioCreateDTO entity) {
         return objectMapper.convertValue(entity, Usuario.class);
     }
 }
