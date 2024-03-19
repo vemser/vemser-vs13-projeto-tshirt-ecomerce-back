@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.service;
 
+import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -8,8 +9,10 @@ import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,19 +20,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UsuarioService {
+    private final UsuarioRepository usuarioRepository;
+    private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
 
     private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     private static final String MSG_USUARIO_NAO_ENCONTRADO_INATIVO = "Usuário não encontrado ou já está inativo";
     private static final String MSG_EMAIL_SENHA_OBRIGATORIOS = "E-mail e senha são obrigatórios";
     private static final String MSG_EMAIL_INVALIDO = "E-mail Inválido";
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     public List<UsuarioDTO> listarUsuariosInativos() throws RegraDeNegocioException {
         List<Usuario> usuariosInativos = usuarioRepository.findByAtivo(Ativo.INATIVO);
@@ -67,8 +69,11 @@ public class UsuarioService {
             throw new RegraDeNegocioException(MSG_EMAIL_INVALIDO);
         }
 
+
+        String senhaCriptografada = passwordEncoder.encode(usuarioAtualizado.getSenha());
         usuarioAtualizadoEntidade = updateParaUsuario(usuarioAtualizado, usuarioAtualizadoEntidade);
         usuarioAtualizadoEntidade.setAtivo(Ativo.ATIVO);
+        usuarioAtualizadoEntidade.setSenha(senhaCriptografada);
         usuarioRepository.save(usuarioAtualizadoEntidade);
         return converterParaUsuarioDTOComId(usuarioAtualizadoEntidade);
     }
@@ -114,6 +119,31 @@ public class UsuarioService {
         } else {
             throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO);
         }
+    }
+
+    public Optional<Usuario> buscarUsuarioPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+    public Integer buscarIdUsuarioLogado() {
+        return Integer.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    public String buscarUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public UsuarioDTO alterarSenha(AlteraSenhaDTO alteraSenhaDTO) throws Exception {
+        Optional<Usuario> usuarioAtualizar = buscarUsuarioPorEmail(alteraSenhaDTO.getEmail());
+        if (usuarioAtualizar.isEmpty()) {
+            throw new RegraDeNegocioException("Usuário ou Senha inválida");
+        }
+        if (!passwordEncoder.matches(alteraSenhaDTO.getSenhaAtual(), usuarioAtualizar.get().getSenha())) {
+            throw new RegraDeNegocioException("Usuário ou Senha inválida");
+        }
+        String senhaNovaCriptografada = passwordEncoder.encode(alteraSenhaDTO.getSenhaNova());
+        usuarioAtualizar.get().setSenha(senhaNovaCriptografada);
+        return converterParaUsuarioDTOComId(usuarioRepository.save(usuarioAtualizar.get()));
     }
 
     private UsuarioDTO converterParaUsuarioDTOComId(Usuario entity) {

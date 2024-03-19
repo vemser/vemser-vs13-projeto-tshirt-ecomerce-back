@@ -5,20 +5,25 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
 import br.com.dbc.vemser.iShirts.service.mocks.MockPessoa;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
+
+
+import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,7 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PessoaServiceTest {
 
     @InjectMocks
@@ -52,7 +57,7 @@ public class PessoaServiceTest {
         pessoaService = new PessoaService(pessoaRepository, objectMapper);
     }
 
-    @Tag("Teste para cadastrar uma Pessoa")
+    @DisplayName("Teste para cadastrar uma Pessoa")
     @Test
     public void testarCadastrarPessoa() throws RegraDeNegocioException {
         PessoaCreateDTO pessoaCreateDTO = MockPessoa.retornarPessoaCreateDTO();
@@ -66,7 +71,7 @@ public class PessoaServiceTest {
         assertEquals(pessoa, pessoaCadastrada);
     }
 
-    @Tag("Teste_para_atualizar_uma_Pessoa")
+    @DisplayName("Teste_para_atualizar_uma_Pessoa")
     @Test
     public void testarAtualizarUmaPessoa() throws RegraDeNegocioException {
         PessoaUpdateDTO pessoaUpdateDTO = MockPessoa.retornarPessoaUpdateDTO();
@@ -83,7 +88,7 @@ public class PessoaServiceTest {
         assertEquals(pessoa, pessoaAtualizada);
     }
 
-    @Tag("Teste_para_atualizar_uma_Pessoa_com_excecao")
+    @DisplayName("Teste_para_atualizar_uma_Pessoa_com_excecao")
     @Test
     public void testarAtualizarUmaPessoaComExcecao() {
         PessoaUpdateDTO pessoaUpdateDTO = new PessoaUpdateDTO();
@@ -106,7 +111,7 @@ public class PessoaServiceTest {
         });
     }
 
-    @Tag("Teste_para_buscar_todas_as_Pessoas")
+    @DisplayName("Teste_para_buscar_todas_as_Pessoas")
     @Test
     public void testarBuscarTodasPessoas() throws RegraDeNegocioException {
         Pageable pageable = PageRequest.of(0,10);
@@ -127,7 +132,7 @@ public class PessoaServiceTest {
         assertEquals(pessoaPage, result);
     }
 
-    @Tag("Teste_para_buscar_uma_Pessoa_por_id")
+    @DisplayName("Teste_para_buscar_uma_Pessoa_por_id")
     @Test
     public void testarBuscarPessoaPorId() throws RegraDeNegocioException {
         Pessoa pessoa = new Pessoa();
@@ -141,7 +146,7 @@ public class PessoaServiceTest {
     }
 
 
-    @Tag("Teste_para_inativar_uma_Pessoa")
+    @DisplayName("Teste_para_inativar_uma_Pessoa")
     @Test
     public void testarInativarPessoa() {
         Integer idPessoa = 1;
@@ -157,7 +162,7 @@ public class PessoaServiceTest {
         verify(pessoaRepository).save(any(Pessoa.class));
     }
 
-    @Tag("Teste_para_ativar_uma_Pessoa")
+    @DisplayName("Teste_para_ativar_uma_Pessoa")
     @Test
     public void testarAtivarPessoa() {
         Integer idPessoa = 1;
@@ -174,7 +179,7 @@ public class PessoaServiceTest {
 
     }
 
-    @Tag("Teste_para_buscar_uma_Pessoa_por_CPF")
+    @DisplayName("Teste_para_buscar_uma_Pessoa_por_CPF")
     @Test
     public void testarBuscarPessoaPorCpf() throws RegraDeNegocioException {
         String cpf = "12345678901";
@@ -202,7 +207,7 @@ public class PessoaServiceTest {
         method.invoke(pessoaService, pessoaCreateDTO);
     }
 
-    @Tag("Teste_para_validar_uma_Pessoa_com_data_de_nascimento_futura")
+    @DisplayName("Teste_para_validar_uma_Pessoa_com_data_de_nascimento_futura")
     @Test
     public void testarValidarPessoaComDataNascimentoFutura() throws Exception {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
@@ -221,7 +226,7 @@ public class PessoaServiceTest {
         assertTrue(exception.getCause() instanceof IllegalArgumentException);
     }
 
-    @Tag("Teste_para_validar_uma_Pessoa_com_CPF_existente")
+    @DisplayName("Teste_para_validar_uma_Pessoa_com_CPF_existente")
     @Test
     public void testarValidarPessoaComCpfExistente() throws Exception {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
