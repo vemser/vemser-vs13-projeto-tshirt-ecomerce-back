@@ -12,4 +12,8 @@ public enum Ativo {
     Ativo(int index) {
         this.index = index;
     }
+
+    public int getIndex() {
+        return this.index;
+    }
 }

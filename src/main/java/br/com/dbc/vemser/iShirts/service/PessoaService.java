@@ -3,9 +3,9 @@ package br.com.dbc.vemser.iShirts.service;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
-import br.com.dbc.vemser.iShirts.model.Endereco;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
-import br.com.dbc.vemser.iShirts.repository.EnderecoRepository;
+import br.com.dbc.vemser.iShirts.model.Usuario;
+import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.Date;
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
-    private final EnderecoRepository enderecoRepository;
+    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
     private static final String CPF_INVALIDO = "CPF inválido";
@@ -43,6 +43,7 @@ public class PessoaService {
         pessoa.setDataNascimento(pessoaCreateDTO.getDataNascimento());
         pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
         pessoa.setAtivo(pessoaCreateDTO.getAtivo());
+        pessoa.setIdUsuario(pessoaCreateDTO.getIdUsuario());
 
         return pessoaRepository.save(pessoa);
     }
@@ -76,12 +77,22 @@ public class PessoaService {
         return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
     }
 
-    public void deletarPessoa(Integer idPessoa) {
-        if (!pessoaRepository.existsById(idPessoa)) {
-            throw new RuntimeException(ID_NAO_ENCONTRADO);
-        }
+    public void inativarPessoa(Integer idPessoa) {
+        Pessoa pessoa = pessoaRepository.findById(idPessoa)
+                .orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
 
-        pessoaRepository.deleteById(idPessoa);
+        pessoa.setAtivo(String.valueOf(Ativo.INATIVO.getIndex()));
+
+        pessoaRepository.save(pessoa);
+    }
+
+    public void ativarPessoa(Integer idPessoa) {
+        Pessoa pessoa = pessoaRepository.findById(idPessoa)
+                .orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
+
+        pessoa.setAtivo(String.valueOf(Ativo.ATIVO.getIndex()));
+
+        pessoaRepository.save(pessoa);
     }
 
     public Pessoa buscarPessoaPorCpf(String cpf) throws RegraDeNegocioException {

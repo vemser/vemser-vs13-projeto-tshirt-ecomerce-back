@@ -22,6 +22,13 @@ public class Pessoa {
     @Column(name = "ID_PESSOA")
     private Integer idPessoa;
 
+//    @Column(name = "ID_USUARIO", nullable = false)
+//    private Integer idUsuario;
+
+//    @OneToOne
+//    @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO", nullable = false)
+//    private Usuario usuario;
+
     @OneToOne
     @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO", nullable = false)
     private Usuario usuario;
@@ -59,4 +66,8 @@ public class Pessoa {
     @Column(name = "EDITADO", columnDefinition="TIMESTAMP")
     private Date editado;
 
+    public void setIdUsuario(Integer idUsuario) {
+        this.usuario = new Usuario();
+        this.usuario.setIdUsuario(idUsuario);
+    }
 }

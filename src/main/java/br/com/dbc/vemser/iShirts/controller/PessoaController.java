@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @Validated
 @RequiredArgsConstructor
@@ -28,32 +30,38 @@ public class PessoaController {
     }
 
     @GetMapping("/{idPessoa}")
-    public ResponseEntity<Pessoa> buscarPorId(Integer idPessoa) throws RegraDeNegocioException {
+    public ResponseEntity<Pessoa> buscarPessoaPorId(@PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
         Pessoa pessoa = pessoaService.buscarPessoaPorId(idPessoa);
         return new ResponseEntity<>(pessoa, HttpStatus.OK);
     }
 
     @GetMapping("/buscarPorCpf/{cpf}")
-    public ResponseEntity<Pessoa> buscarPorCpf(@PathVariable("cpf") String cpf) throws RegraDeNegocioException {
+    public ResponseEntity<Pessoa> buscarPorCpf(@Valid @PathVariable("cpf") String cpf) throws RegraDeNegocioException {
         Pessoa pessoa = pessoaService.buscarPessoaPorCpf(cpf);
         return new ResponseEntity<>(pessoa, HttpStatus.OK);
     }
 
-    @PostMapping("/cadastrar")
-    public ResponseEntity<Pessoa> cadastrarPessoa(PessoaCreateDTO pessoaDTO) throws RegraDeNegocioException {
+    @PostMapping()
+    public ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO pessoaDTO) throws RegraDeNegocioException {
         Pessoa pessoaCadastrada = pessoaService.cadastrarPessoa(pessoaDTO);
         return new ResponseEntity<>(pessoaCadastrada, HttpStatus.CREATED);
     }
 
     @PutMapping("/atualizar/{idPessoa}")
-    public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Integer idPessoa, @RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException {
+    public ResponseEntity<Pessoa> atualizarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa, @RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException {
         Pessoa pessoaAtualizada = pessoaService.atualizarPessoa(idPessoa, pessoaDTO);
         return new ResponseEntity<>(pessoaAtualizada, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deletar/{idPessoa}")
-    public ResponseEntity<Void> deletarPessoa(@PathVariable Integer idPessoa) {
-        pessoaService.deletarPessoa(idPessoa);
+    @PutMapping("/inativar/{idPessoa}")
+    public ResponseEntity<Void> deletarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) {
+        pessoaService.inativarPessoa(idPessoa);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/ativar/{idPessoa}")
+    public ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) {
+        pessoaService.ativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
