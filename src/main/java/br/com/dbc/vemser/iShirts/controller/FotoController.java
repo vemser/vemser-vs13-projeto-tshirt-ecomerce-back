@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
-import br.com.dbc.vemser.iShirts.controller.documentacaoInterface.FotoControllerInterface;
+import br.com.dbc.vemser.iShirts.controller.interfaces.FotoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.service.FotoService;

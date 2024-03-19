@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.iShirts.controller.documentacaoInterface;
+package br.com.dbc.vemser.iShirts.controller.interfaces;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
