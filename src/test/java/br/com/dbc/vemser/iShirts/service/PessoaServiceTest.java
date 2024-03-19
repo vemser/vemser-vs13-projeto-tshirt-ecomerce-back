@@ -191,7 +191,7 @@ public class PessoaServiceTest {
     @Test
     public void testValidarPessoa() throws Exception {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
-        pessoaCreateDTO.setCpf("12345678901"); // CPF válido
+        pessoaCreateDTO.setCpf("12345678901");
 
         PessoaService pessoaService = new PessoaService(pessoaRepository, objectMapper);
 
@@ -225,9 +225,9 @@ public class PessoaServiceTest {
     @Test
     public void testarValidarPessoaComCpfExistente() throws Exception {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
-        pessoaCreateDTO.setCpf("12345678901"); // CPF válido
+        pessoaCreateDTO.setCpf("12345678901");
 
-        when(pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())).thenReturn(true); // Simula que o CPF já existe
+        when(pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())).thenReturn(true);
 
         Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
 
