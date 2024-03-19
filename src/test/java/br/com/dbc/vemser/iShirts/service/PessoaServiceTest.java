@@ -5,6 +5,8 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -165,5 +168,22 @@ public class PessoaServiceTest {
         Pessoa result = pessoaService.buscarPessoaPorId(1);
 
         assertEquals(pessoa, result);
+    }
+
+
+    @Tag("Teste_para_inativar_uma_Pessoa")
+    @Test
+    public void testarInativarPessoa() {
+        Integer idPessoa = 1;
+        Pessoa pessoa = new Pessoa();
+        pessoa.setIdPessoa(idPessoa);
+        pessoa.setAtivo("1");
+
+        when(pessoaRepository.findById(idPessoa)).thenReturn(Optional.of(pessoa));
+
+        pessoaService.inativarPessoa(idPessoa);
+
+        assertEquals(String.valueOf(Ativo.INATIVO.getIndex()), pessoa.getAtivo());
+        verify(pessoaRepository).save(any(Pessoa.class));
     }
 }
