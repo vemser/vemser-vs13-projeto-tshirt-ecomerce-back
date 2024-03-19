@@ -10,7 +10,6 @@ import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
-    private UsuarioRepository usuarioRepository;
-    private ObjectMapper objectMapper;
+    private final UsuarioRepository usuarioRepository;
+    private final ObjectMapper objectMapper;
     private final PasswordEncoder passwordEncoder;
 
     public List<UsuarioDTO> listarUsuariosInativos() throws RegraDeNegocioException {
