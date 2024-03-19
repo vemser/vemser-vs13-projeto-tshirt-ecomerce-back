@@ -1,11 +1,9 @@
 package br.com.dbc.vemser.iShirts.dto.pessoa;
 
-import br.com.dbc.vemser.iShirts.dto.endereco.EnderecoCreateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -33,7 +31,7 @@ public class PessoaCreateDTO {
     private String celular;
 
     @NotNull
-    @Schema(description = "Data de nascimento do cliente", example = "01/01/2000", required = true)
+    @Schema(description = "Data de nascimento da pessoa", example = "1990-01-01", required = true)
     private Date dataNascimento;
 
     @NotNull
@@ -44,6 +42,5 @@ public class PessoaCreateDTO {
     @Schema(description = "Status ativo da pessoa", example = "1", required = true)
     private String ativo;
 
-    private EnderecoCreateDTO endereco;
 
 }
