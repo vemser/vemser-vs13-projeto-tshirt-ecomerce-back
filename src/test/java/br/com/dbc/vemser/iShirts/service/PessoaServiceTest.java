@@ -15,10 +15,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -125,5 +131,26 @@ public class PessoaServiceTest {
         assertThrows(RuntimeException.class, () -> {
             pessoaService.atualizarPessoa(1, pessoaUpdateDTO);
         });
+    }
+
+    @Tag("Teste_para_buscar_todas_as_Pessoas")
+    @Test
+    public void testarBuscarTodasPessoas() throws RegraDeNegocioException {
+        Pageable pageable = PageRequest.of(0,10);
+
+        List<Pessoa> pessoas = new ArrayList<>();
+        for(int i = 0; i < 10; i++) {
+            Pessoa p = new Pessoa();
+            p.setIdPessoa(i);
+            pessoas.add(p);
+        }
+
+        Page<Pessoa> pessoaPage = new PageImpl<>(pessoas);
+
+        when(pessoaRepository.findAll(any(Pageable.class))).thenReturn(pessoaPage);
+
+        Page<Pessoa> result = pessoaService.buscarTodasPessoas(pageable);
+
+        assertEquals(pessoaPage, result);
     }
 }
