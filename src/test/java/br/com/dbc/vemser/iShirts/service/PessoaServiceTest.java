@@ -153,4 +153,17 @@ public class PessoaServiceTest {
 
         assertEquals(pessoaPage, result);
     }
+
+    @Tag("Teste_para_buscar_uma_Pessoa_por_id")
+    @Test
+    public void testarBuscarPessoaPorId() throws RegraDeNegocioException {
+        Pessoa pessoa = new Pessoa();
+        pessoa.setIdPessoa(1);
+
+        when(pessoaRepository.findById(1)).thenReturn(Optional.of(pessoa));
+
+        Pessoa result = pessoaService.buscarPessoaPorId(1);
+
+        assertEquals(pessoa, result);
+    }
 }
