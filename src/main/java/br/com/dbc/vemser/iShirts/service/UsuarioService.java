@@ -62,8 +62,11 @@ public class UsuarioService {
             throw new RegraDeNegocioException("E-mail Inválido");
         }
 
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+
         Usuario novoUsuario = CreatetoUsuario(usuario);
         novoUsuario.setAtivo(Ativo.ATIVO);
+        novoUsuario.setSenha(senhaCriptografada);
         usuarioRepository.save(novoUsuario);
         return convertToUsuarioDTOWithId(novoUsuario);
     }
