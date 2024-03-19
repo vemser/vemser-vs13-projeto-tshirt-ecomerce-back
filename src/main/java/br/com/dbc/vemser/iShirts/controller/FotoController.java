@@ -22,9 +22,10 @@ import java.io.IOException;
 public class FotoController implements FotoControllerInterface {
     private final FotoService fotoService;
 
-    @PostMapping
-    public ResponseEntity<FotoDTO> criarFoto(@RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException {
-        return new ResponseEntity<>(fotoService.criar(arquivo), HttpStatus.CREATED);
+    @PostMapping("/{idVariacao}")
+    public ResponseEntity<FotoDTO> criarFoto(@PathVariable("idVariacao") Integer idVariacao,
+            @RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException {
+        return new ResponseEntity<>(fotoService.criar(arquivo, idVariacao), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idFoto}")

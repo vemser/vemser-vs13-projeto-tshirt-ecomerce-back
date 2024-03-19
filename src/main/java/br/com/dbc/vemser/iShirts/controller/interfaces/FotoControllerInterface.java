@@ -20,8 +20,9 @@ public interface FotoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping
-    ResponseEntity<FotoDTO> criarFoto(@RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException;
+    @PostMapping("/{idVariacao}")
+    public ResponseEntity<FotoDTO> criarFoto(@PathVariable("idVariacao") Integer idVariacao,
+                                             @RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException;
 
     @Operation(summary = "Atualizar uma foto", description = "Atualiza uma foto no banco de dados, formatos suportados: WEBP, JPG, JPEG, GIF, PNG, BMP")
     @ApiResponses(

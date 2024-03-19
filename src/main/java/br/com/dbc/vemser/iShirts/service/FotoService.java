@@ -18,13 +18,20 @@ import java.time.LocalDateTime;
 public class FotoService {
 
     private final FotoRepository fotoRepository;
+
+//    private final VariacaoService variacaoService;
     private final MediaTypeUtil mediaTypeUtil;
     private final ObjectMapper objectMapper;
 
-    public FotoDTO criar(MultipartFile arquivo) throws RegraDeNegocioException, IOException {
+    public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws RegraDeNegocioException, IOException {
+
+//       Variacao variacao = variacaoService.findById(idVariacao);
 
         Foto fotoEntity = gerarFoto(arquivo);
         fotoEntity = fotoRepository.save(fotoEntity);
+
+//        varicao.setFoto(fotoEntity);
+//        variacaoService.save(variacao);
 
         FotoDTO fotoDTO = objectMapper.convertValue(fotoEntity, FotoDTO.class);
         return fotoDTO;
