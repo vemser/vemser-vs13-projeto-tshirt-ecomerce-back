@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.documentacaoInterface.PessoaControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
@@ -7,6 +8,7 @@ import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.service.PessoaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,13 @@ import javax.validation.Valid;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("/pessoa")
-public class PessoaController {
+public class PessoaController implements PessoaControllerInterface {
 
     private final PessoaService pessoaService;
 
     @GetMapping
-    public ResponseEntity<Page<Pessoa>> buscarTodasPessoas(Pageable pageable) throws RegraDeNegocioException {
+    public ResponseEntity<Page<Pessoa>> buscarTodasPessoas() throws RegraDeNegocioException {
+        Pageable pageable = PageRequest.of(0, 20);
         Page<Pessoa> pessoas = pessoaService.buscarTodasPessoas(pageable);
         return new ResponseEntity<>(pessoas, HttpStatus.OK);
     }
@@ -54,7 +57,7 @@ public class PessoaController {
     }
 
     @PutMapping("/inativar/{idPessoa}")
-    public ResponseEntity<Void> deletarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) {
+    public ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) {
         pessoaService.inativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
