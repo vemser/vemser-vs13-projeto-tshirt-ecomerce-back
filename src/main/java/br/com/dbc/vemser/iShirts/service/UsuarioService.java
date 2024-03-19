@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.service;
 
+import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -8,7 +9,10 @@ import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +20,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
-
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UsuarioDTO> listarUsuariosInativos() throws RegraDeNegocioException {
         List<Usuario> usuariosInativos = usuarioRepository.findByAtivo(Ativo.INATIVO);
@@ -98,6 +100,31 @@ public class UsuarioService {
         } else {
             throw new RegraDeNegocioException("Usuário não encontrado");
         }
+    }
+
+    public Optional<Usuario> buscarUsuarioPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+    public Integer buscarIdUsuarioLogado() {
+        return Integer.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    public String buscarUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public UsuarioDTO alterarSenha(AlteraSenhaDTO alteraSenhaDTO) throws Exception {
+        Optional<Usuario> usuarioAtualizar = buscarUsuarioPorEmail(alteraSenhaDTO.getEmail());
+        if (usuarioAtualizar.isEmpty()) {
+            throw new RegraDeNegocioException("Usuário ou Senha inválida");
+        }
+        if (!passwordEncoder.matches(alteraSenhaDTO.getSenhaAtual(), usuarioAtualizar.get().getSenha())) {
+            throw new RegraDeNegocioException("Usuário ou Senha inválida");
+        }
+        String senhaNovaCriptografada = passwordEncoder.encode(alteraSenhaDTO.getSenhaNova());
+        usuarioAtualizar.get().setSenha(senhaNovaCriptografada);
+        return convertToUsuarioDTOWithId(usuarioRepository.save(usuarioAtualizar.get()));
     }
 
     private UsuarioDTO convertToUsuarioDTOWithId(Usuario entity) {
