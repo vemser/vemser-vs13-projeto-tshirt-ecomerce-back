@@ -1,8 +1,10 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
+import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.FotoRepository;
 import br.com.dbc.vemser.iShirts.utils.MediaTypeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,20 +20,19 @@ import java.time.LocalDateTime;
 public class FotoService {
 
     private final FotoRepository fotoRepository;
-
-//    private final VariacaoService variacaoService;
+    private final VariacaoService variacaoService;
     private final MediaTypeUtil mediaTypeUtil;
     private final ObjectMapper objectMapper;
 
-    public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws RegraDeNegocioException, IOException {
+    public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws Exception {
 
-//       Variacao variacao = variacaoService.findById(idVariacao);
+       VariacaoDTO variacaoDTO = variacaoService.listarPorID(idVariacao);
 
         Foto fotoEntity = gerarFoto(arquivo);
         fotoEntity = fotoRepository.save(fotoEntity);
 
-//        varicao.setFoto(fotoEntity);
-//        variacaoService.save(variacao);
+        variacaoDTO.setFoto(fotoEntity);
+        variacaoService.criarVariacao(variacaoDTO);
 
         FotoDTO fotoDTO = objectMapper.convertValue(fotoEntity, FotoDTO.class);
         return fotoDTO;
