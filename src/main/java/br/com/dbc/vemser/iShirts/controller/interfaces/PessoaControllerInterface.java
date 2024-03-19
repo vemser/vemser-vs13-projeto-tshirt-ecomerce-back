@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.iShirts.controller.documentacaoInterface;
+package br.com.dbc.vemser.iShirts.controller.interfaces;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
