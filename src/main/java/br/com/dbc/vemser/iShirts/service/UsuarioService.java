@@ -70,7 +70,7 @@ public class UsuarioService {
         }
 
 
-        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        String senhaCriptografada = passwordEncoder.encode(usuarioAtualizado.getSenha());
         usuarioAtualizadoEntidade = updateParaUsuario(usuarioAtualizado, usuarioAtualizadoEntidade);
         usuarioAtualizadoEntidade.setAtivo(Ativo.ATIVO);
         usuarioAtualizadoEntidade.setSenha(senhaCriptografada);
