@@ -4,7 +4,6 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
-import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +22,6 @@ import java.util.Date;
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
-    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
     private static final String CPF_INVALIDO = "CPF inválido";
