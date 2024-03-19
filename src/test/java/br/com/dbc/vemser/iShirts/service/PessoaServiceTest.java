@@ -186,4 +186,21 @@ public class PessoaServiceTest {
         assertEquals(String.valueOf(Ativo.INATIVO.getIndex()), pessoa.getAtivo());
         verify(pessoaRepository).save(any(Pessoa.class));
     }
+
+    @Tag("Teste_para_ativar_uma_Pessoa")
+    @Test
+    public void testarAtivarPessoa() {
+        Integer idPessoa = 1;
+        Pessoa pessoa = new Pessoa();
+        pessoa.setIdPessoa(idPessoa);
+        pessoa.setAtivo("0");
+
+        when(pessoaRepository.findById(idPessoa)).thenReturn(Optional.of(pessoa));
+
+        pessoaService.ativarPessoa(idPessoa);
+
+        assertEquals(String.valueOf(Ativo.ATIVO.getIndex()), pessoa.getAtivo());
+        verify(pessoaRepository).save(any(Pessoa.class));
+
+    }
 }
