@@ -1,6 +1,8 @@
 package br.com.dbc.vemser.iShirts.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -47,10 +49,12 @@ public class Endereco {
     @Column(name = "pais")
     private String pais;
 
-    @Column(name = "criadoEm")
+    @Column(name = "criado")
+    @CreationTimestamp
     private Date criadoEm;
 
-    @Column(name = "editadoEm")
+    @Column(name = "editado")
+    @UpdateTimestamp
     private Date editadoEm;
 
 

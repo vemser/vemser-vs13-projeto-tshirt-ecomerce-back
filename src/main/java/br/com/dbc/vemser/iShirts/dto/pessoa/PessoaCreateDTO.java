@@ -11,6 +11,9 @@ import java.util.Date;
 public class PessoaCreateDTO {
 
     @NotNull
+    private Integer idUsuario;
+
+    @NotNull
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     @Schema(description = "Nome da pessoa", example = "João", required = true)
     private String nome;
