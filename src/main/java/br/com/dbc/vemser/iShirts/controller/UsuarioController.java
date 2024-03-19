@@ -35,9 +35,8 @@ public class UsuarioController {
     }
     @GetMapping("/buscar-por-id/{id}")
     public ResponseEntity<UsuarioDTO> buscarUsuarioPorId(@PathVariable Integer id) throws RegraDeNegocioException {
-        Optional<UsuarioDTO> usuarioOptional = usuarioService.buscarUsuarioPorId(id);
-        return usuarioOptional.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+       UsuarioDTO usuario = usuarioService.buscarUsuarioPorId(id);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @PostMapping

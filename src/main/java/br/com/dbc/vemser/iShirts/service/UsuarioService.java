@@ -45,12 +45,12 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<UsuarioDTO> buscarUsuarioPorId(Integer id) throws RegraDeNegocioException {
+    public UsuarioDTO buscarUsuarioPorId(Integer id) throws RegraDeNegocioException {
         Optional<Usuario> usuario = usuarioRepository.findByIdUsuarioAndAtivo(id, Ativo.ATIVO);
         if (usuario.isEmpty()) {
             throw new RegraDeNegocioException("Usuário não encontrado");
         }
-        return usuario.map(this::convertToUsuarioDTOWithId);
+        return convertToUsuarioDTOWithId(usuario.get());
     }
 
     public UsuarioDTO criarUsuario(UsuarioCreateDTO usuario) throws RegraDeNegocioException {

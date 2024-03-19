@@ -1,7 +1,11 @@
 package br.com.dbc.vemser.iShirts.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,6 +39,7 @@ public class Pessoa {
     private String celular;
 
     @Column(name = "DATA_NASCIMENTO")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dataNascimento;
 
     @Column(name = "PREFERENCIA", nullable = false)
@@ -47,10 +52,15 @@ public class Pessoa {
     private String ativo;
 
     @Column(name = "CRIADO", columnDefinition="TIMESTAMP")
+    @CreationTimestamp
     private Date criado;
 
+    @UpdateTimestamp
     @Column(name = "EDITADO", columnDefinition="TIMESTAMP")
     private Date editado;
 
-
+    public void setIdUsuario(Integer idUsuario) {
+        this.usuario = new Usuario();
+        this.usuario.setIdUsuario(idUsuario);
+    }
 }
