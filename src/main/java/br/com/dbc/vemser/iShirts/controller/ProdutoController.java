@@ -1,7 +1,9 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.ProdutoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.produto.ProdutoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.produto.ProdutoDTO;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.service.ProdutoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 @Validated
 @Tag(name = "Produtos", description = "Crud de produtos")
-public class ProdutoController {
+public class ProdutoController implements ProdutoControllerInterface {
 
     private final ProdutoService produtoService;
 
@@ -33,7 +35,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/por-id/{id}")
-    public ResponseEntity<ProdutoDTO> listarPorID(@PathVariable("id") @NotNull Integer id) throws Exception {
+    public ResponseEntity<ProdutoDTO> listarPorID(@PathVariable("id") @NotNull Integer id) throws RegraDeNegocioException {
         return new ResponseEntity<>(produtoService.listarPorID(id), HttpStatus.OK);
     }
 
@@ -43,12 +45,12 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoDTO> editarProduto(@RequestBody @Valid ProdutoCreateDTO produto, @PathVariable("id") @NotNull Integer id){
+    public ResponseEntity<ProdutoDTO> editarProduto(@RequestBody @Valid ProdutoCreateDTO produto, @PathVariable("id") @NotNull Integer id) throws RegraDeNegocioException {
         return new ResponseEntity<>(produtoService.editarProduto(produto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarProduto(@PathVariable("id") @NotNull Integer id){
+    public ResponseEntity<String> deletarProduto(@PathVariable("id") @NotNull Integer id) throws RegraDeNegocioException {
         return new ResponseEntity<>(produtoService.deletarProduto(id), HttpStatus.OK);
     }
 

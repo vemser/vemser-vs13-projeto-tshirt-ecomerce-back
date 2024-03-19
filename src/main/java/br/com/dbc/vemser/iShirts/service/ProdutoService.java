@@ -2,6 +2,7 @@ package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.produto.ProdutoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.produto.ProdutoDTO;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Produto;
 import br.com.dbc.vemser.iShirts.repository.ProdutoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.print.attribute.standard.MediaSize;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
@@ -17,15 +21,17 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ObjectMapper objectMapper;
 
+    private static final String NAO_ENCONTRADO = "Produto não encontrado";
+
     public Page<ProdutoDTO> listarProdutos(Pageable page){
         Page<Produto> listaProdutos = produtoRepository.findAllByAtivo(page, "1");
         return listaProdutos.map(produto -> objectMapper.convertValue(produto, ProdutoDTO.class));
     }
 
-    public ProdutoDTO listarPorID(Integer id) throws Exception {
-        Produto produto = produtoRepository.findById(id).get();
+    public ProdutoDTO listarPorID(Integer id) throws RegraDeNegocioException {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
         if(produto.getAtivo().equals("0")){
-            throw new Exception();
+            throw new RegraDeNegocioException(NAO_ENCONTRADO);
         }
         return objectMapper.convertValue(produto, ProdutoDTO.class);
     }
@@ -39,8 +45,8 @@ public class ProdutoService {
         return objectMapper.convertValue(produtoSalvo, ProdutoDTO.class);
     }
 
-    public ProdutoDTO editarProduto(ProdutoCreateDTO produto, Integer id){
-        Produto produtoEntity = produtoRepository.findById(id).get();
+    public ProdutoDTO editarProduto(ProdutoCreateDTO produto, Integer id) throws RegraDeNegocioException {
+        Produto produtoEntity = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
         produtoEntity.setTitulo(produto.getTitulo());
         produtoEntity.setDescricao(produto.getDescricao());
         produtoEntity.setCategoria(produto.getCategoria());
@@ -50,8 +56,8 @@ public class ProdutoService {
         return objectMapper.convertValue(produtoSalvo, ProdutoDTO.class);
     }
 
-    public String deletarProduto(Integer id){
-        Produto produto = produtoRepository.findById(id).get();
+    public String deletarProduto(Integer id) throws RegraDeNegocioException {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
         produto.setAtivo("0");
         produtoRepository.save(produto);
 
