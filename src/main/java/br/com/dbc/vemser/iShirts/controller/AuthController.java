@@ -3,11 +3,13 @@ package br.com.dbc.vemser.iShirts.controller;
 
 import br.com.dbc.vemser.iShirts.dto.auth.*;
 import br.com.dbc.vemser.iShirts.dto.usuario.*;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.security.TokenService;
 import br.com.dbc.vemser.iShirts.service.UsuarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,10 +47,15 @@ public class AuthController {
         return tokenService.generateToken(usuarioValidado);
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<String> adicionar(@RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws Exception {
-        usuarioService.criarUsuario(usuarioCreateDTO);
-        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
+    @PostMapping("/criar-usuario")
+    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+        UsuarioDTO novoUsuario = usuarioService.criarUsuario(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+    }
+    @PostMapping("/criar-cliente")
+    public ResponseEntity<UsuarioDTO> criarCliente(@Valid @RequestBody ClienteCreateDTO usuario) throws RegraDeNegocioException {
+        UsuarioDTO novoUsuario = usuarioService.criarCliente(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
     @PutMapping("/alterar-senha")

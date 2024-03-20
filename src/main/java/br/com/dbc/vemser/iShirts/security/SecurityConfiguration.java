@@ -28,9 +28,15 @@ public class  SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
+<<<<<<< Updated upstream
                         .antMatchers("/auth/cadastro", "/auth/login").permitAll()
                         .anyRequest().authenticated()
 
+=======
+                        .antMatchers("/auth/criar-cliente", "/auth/login").permitAll()
+                        .antMatchers("/cargo/cadastro", "/cargo/{idCargo}", "/cargo").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+>>>>>>> Stashed changes
                 );
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
 
