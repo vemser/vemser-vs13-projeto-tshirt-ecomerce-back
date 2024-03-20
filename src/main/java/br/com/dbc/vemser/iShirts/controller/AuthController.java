@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/auth")
 @Validated
-@Tag(name = "Autorização", description = "Endpoint de Autorização")
+@Tag(name = "Autenticação", description = "Endpoint de Autenticação")
 @RequiredArgsConstructor
 public class AuthController {
 
