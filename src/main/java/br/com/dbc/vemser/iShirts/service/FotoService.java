@@ -1,9 +1,11 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
+import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.FotoRepository;
 import br.com.dbc.vemser.iShirts.utils.MediaTypeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,15 +28,16 @@ public class FotoService {
     public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws Exception {
 
        VariacaoDTO variacaoDTO = variacaoService.listarPorID(idVariacao);
+       VariacaoCreateDTO variacaoCreateDTO = objectMapper.convertValue(variacaoDTO, VariacaoCreateDTO.class);
 
-        Foto fotoEntity = gerarFoto(arquivo);
-        fotoEntity = fotoRepository.save(fotoEntity);
+       Foto fotoEntity = gerarFoto(arquivo);
+       fotoEntity = fotoRepository.save(fotoEntity);
 
-        variacaoDTO.setFoto(fotoEntity);
-        variacaoService.criarVariacao(variacaoDTO);
+       variacaoCreateDTO.setFoto(fotoEntity);
+       variacaoService.criarVariacao(variacaoCreateDTO);
 
-        FotoDTO fotoDTO = objectMapper.convertValue(fotoEntity, FotoDTO.class);
-        return fotoDTO;
+       FotoDTO fotoDTO = objectMapper.convertValue(fotoEntity, FotoDTO.class);
+       return fotoDTO;
     }
 
     public FotoDTO atualizar(Integer idFoto, MultipartFile arquivo) throws RegraDeNegocioException, IOException {
