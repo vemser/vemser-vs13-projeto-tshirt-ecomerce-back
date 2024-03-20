@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.UsuarioControllerInterface;
+import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -18,7 +20,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequestMapping("/usuario")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerInterface {
 
     @Autowired
     private UsuarioService usuarioService;
@@ -35,15 +37,8 @@ public class UsuarioController {
     }
     @GetMapping("/buscar-por-id/{id}")
     public ResponseEntity<UsuarioDTO> buscarUsuarioPorId(@PathVariable Integer id) throws RegraDeNegocioException {
-        Optional<UsuarioDTO> usuarioOptional = usuarioService.buscarUsuarioPorId(id);
-        return usuarioOptional.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
-        UsuarioDTO novoUsuario = usuarioService.criarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+       UsuarioDTO usuario = usuarioService.buscarUsuarioPorId(id);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     //TODO Utilizar o GetLoggedId user ao inves de receber Id

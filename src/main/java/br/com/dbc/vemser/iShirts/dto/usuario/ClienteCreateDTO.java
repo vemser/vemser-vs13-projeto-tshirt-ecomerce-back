@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioCreateDTO {
+public class ClienteCreateDTO {
 
     @NotBlank
     @Schema(description = "E-mail do Usuário", required = true, example = "cliente@dbccompany.com.br")
@@ -27,7 +27,4 @@ public class UsuarioCreateDTO {
     @Schema(description = "Senha do Usuário", required = true, example = "Senha123@")
     @Pattern(regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).*$", message = "A senha deve conter pelo menos 1 caractere especial")
     private String senha;
-
-    private Set<Cargo> cargos;
-
 }

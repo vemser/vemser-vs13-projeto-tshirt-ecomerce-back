@@ -12,12 +12,13 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "FOTOS")
+@Entity(name = "Foto")
+@Table(name = "FOTO")
 public class Foto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FOTOS")
-    @SequenceGenerator(name = "SEQ_FOTOS", sequenceName = "SEQ_FOTOS", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FOTO")
+    @SequenceGenerator(name = "SEQ_FOTO", sequenceName = "SEQ_FOTO", allocationSize = 1)
     @Column(name = "ID_FOTO")
     private Integer idFoto;
 
@@ -25,4 +26,8 @@ public class Foto {
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "ARQUIVO")
     private byte[] arquivo;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_VARIACAO", referencedColumnName = "ID_VARIACAO")
+    private Variacao variacao;
 }
