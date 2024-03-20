@@ -50,7 +50,7 @@ public class PessoaService {
         return pessoaRepository.save(pessoa);
     }
 
-    public Pessoa atualizarPessoa(Integer idPessoa, PessoaUpdateDTO pessoaUpdateDTO) {
+    public Pessoa atualizarPessoa(Integer idPessoa, PessoaUpdateDTO pessoaUpdateDTO) throws RegraDeNegocioException {
         Pessoa pessoa = existID(idPessoa);
 
         pessoa.setNome(pessoaUpdateDTO.getNome());
@@ -68,7 +68,7 @@ public class PessoaService {
         }
     }
 
-    public Page<Pessoa> buscarTodasPessoas(Pageable pageable) throws RegraDeNegocioException {
+    public Page<Pessoa> buscarTodasPessoas(Pageable pageable) {
         Pageable pageableOrdenadoPorId = PageRequest.of(pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by("idPessoa"));
@@ -76,21 +76,21 @@ public class PessoaService {
     }
 
     public Pessoa buscarPessoaPorId(Integer idPessoa) throws RegraDeNegocioException {
-        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
+        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
     }
 
-    public void inativarPessoa(Integer idPessoa) {
+    public void inativarPessoa(Integer idPessoa) throws RegraDeNegocioException {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
-                .orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
+                .orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
 
         pessoa.setAtivo(String.valueOf(Ativo.INATIVO.getIndex()));
 
         pessoaRepository.save(pessoa);
     }
 
-    public void ativarPessoa(Integer idPessoa) {
+    public void ativarPessoa(Integer idPessoa) throws RegraDeNegocioException {
         Pessoa pessoa = pessoaRepository.findById(idPessoa)
-                .orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
+                .orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
 
         pessoa.setAtivo(String.valueOf(Ativo.ATIVO.getIndex()));
 
@@ -99,22 +99,22 @@ public class PessoaService {
 
     public Pessoa buscarPessoaPorCpf(String cpf) throws RegraDeNegocioException {
         return pessoaRepository.findByCpf(cpf)
-                .orElseThrow(() -> new RuntimeException(CPF_INVALIDO));
+                .orElseThrow(() -> new RegraDeNegocioException(CPF_INVALIDO));
     }
 
-    private Pessoa existID(Integer idPessoa) {
-        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RuntimeException(ID_NAO_ENCONTRADO));
+    private Pessoa existID(Integer idPessoa) throws RegraDeNegocioException {
+        return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
     }
 
-    private void validarPessoa(PessoaCreateDTO pessoaCreateDTO) {
+    private void validarPessoa(PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException {
         if (pessoaCreateDTO.getCpf() != null && pessoaCreateDTO.getCpf().length() != 11) {
-            throw new IllegalArgumentException(CPF_INVALIDO);
+            throw new RegraDeNegocioException(CPF_INVALIDO);
         }
         if (pessoaCreateDTO.getDataNascimento() != null && pessoaCreateDTO.getDataNascimento().after(new Date())) {
-            throw new IllegalArgumentException(DATA_NASCIMENTO_FUTURA);
+            throw new RegraDeNegocioException(DATA_NASCIMENTO_FUTURA);
         }
         if (pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())) {
-            throw new IllegalArgumentException(CPF_EXISTENTE);
+            throw new RegraDeNegocioException(CPF_EXISTENTE);
         }
     }
 

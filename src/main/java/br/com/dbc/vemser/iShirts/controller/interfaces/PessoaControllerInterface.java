@@ -75,7 +75,7 @@ public interface PessoaControllerInterface {
             @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa);
+    ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
 
     @Operation(summary = "Ativar pessoa", description = "Ativar uma pessoa no sistema.")
     @ApiResponses(value = {
@@ -85,5 +85,5 @@ public interface PessoaControllerInterface {
             @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa);
+    ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
 }
