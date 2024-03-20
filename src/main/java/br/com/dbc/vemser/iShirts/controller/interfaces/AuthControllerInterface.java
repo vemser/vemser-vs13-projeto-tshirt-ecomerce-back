@@ -25,7 +25,7 @@ public interface AuthControllerInterface {
     })
 
     @PostMapping("/login")
-    public String auth(@RequestBody @Valid LoginDTO loginDTO);
+    public String auth(@RequestBody @Valid LoginDTO loginDTO) throws RegraDeNegocioException;
 
 
     @Operation(summary = "Cria um novo usuário.", description = "Cria um novo usuário e retorna os detalhes do usuário criado.")
