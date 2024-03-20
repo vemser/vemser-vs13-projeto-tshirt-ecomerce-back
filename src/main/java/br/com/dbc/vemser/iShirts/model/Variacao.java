@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,19 +19,20 @@ import java.sql.Timestamp;
 @Table(name = "VARIACAO")
 public class Variacao {
 
+    //@OneToMany(mappedBy = "idVariacao")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_VARIACAO")
     @SequenceGenerator(name = "SEQ_VARIACAO",sequenceName = "SEQ_VARIACAO", allocationSize = 1)
-    @Column(name = "ID_VARIACOES")
-    //@OneToMany(mappedBy = "idVariacao")
-    private Integer idVariacoes;
+    @Column(name = "ID_VARIACAO")
+    private Integer idVariacao;
 
     @ManyToOne
     @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID_PRODUTO")
     private Produto produto;
 
-    @OneToMany(mappedBy = "idVariacao")
-    private Foto foto;
+    @OneToMany(mappedBy = "variacao")
+    @Column(name = "ID_FOTO")
+    private List<Foto> foto;
 
     @Column(name = "SKU")
     private String sku;
