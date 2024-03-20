@@ -26,4 +26,8 @@ public class Foto {
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "ARQUIVO")
     private byte[] arquivo;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_VARIACAO", referencedColumnName = "ID_VARIACAO")
+    private Variacao variacao;
 }
