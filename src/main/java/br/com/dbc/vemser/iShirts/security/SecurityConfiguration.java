@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.password.Md4PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -28,15 +28,10 @@ public class  SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-<<<<<<< Updated upstream
-                        .antMatchers("/auth/cadastro", "/auth/login").permitAll()
-                        .anyRequest().authenticated()
-
-=======
                         .antMatchers("/auth/criar-cliente", "/auth/login").permitAll()
                         .antMatchers("/cargo/cadastro", "/cargo/{idCargo}", "/cargo").hasRole("ADMIN")
                         .anyRequest().authenticated()
->>>>>>> Stashed changes
+
                 );
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
 
@@ -70,6 +65,6 @@ public class  SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new Md4PasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 }
