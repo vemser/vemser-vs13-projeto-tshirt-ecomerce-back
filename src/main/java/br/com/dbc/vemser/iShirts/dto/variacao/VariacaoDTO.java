@@ -3,17 +3,19 @@ package br.com.dbc.vemser.iShirts.dto.variacao;
 import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.model.Produto;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class VariacaoDTO {
 
     private Integer idVariacoes;
 
-    private Produto produto;
-
-    private Foto foto;
+    private List<Foto> foto;
 
     private String sku;
 

@@ -1,20 +1,15 @@
 package br.com.dbc.vemser.iShirts.dto.variacao;
 
-import br.com.dbc.vemser.iShirts.model.Foto;
-import br.com.dbc.vemser.iShirts.model.Produto;
 import lombok.Data;
 
-import javax.validation.constraints.*;
-import java.sql.Timestamp;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 public class VariacaoCreateDTO {
 
-    @NotNull(message = "O produto não pode ser nulo")
-    private Produto produto;
-
-    @NotNull(message = "A foto não pode ser nula")
-    private Foto foto;
+    private Integer idProduto;
 
     @NotBlank(message = "O SKU não pode estar em branco")
     private String sku;
@@ -26,19 +21,11 @@ public class VariacaoCreateDTO {
     private String tamanho;
 
     @NotNull(message = "O preço não pode ser nulo")
-    @DecimalMin(value = "0.0", inclusive = false, message = "O preço deve ser maior que zero")
-    private Double preco;
+    private BigDecimal preco;
 
     @NotNull(message = "A taxa de desconto não pode ser nula")
-    @Min(value = 0, message = "A taxa de desconto não pode ser negativa")
     private Integer taxaDesconto;
 
     @NotNull(message = "O campo ativo não pode ser nulo")
     private String ativo;
-
-    @NotNull(message = "O campo criado não pode ser nulo")
-    private Timestamp criado;
-
-    @NotNull(message = "O campo editado não pode ser nulo")
-    private Timestamp editado;
 }

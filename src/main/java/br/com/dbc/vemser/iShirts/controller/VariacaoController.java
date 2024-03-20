@@ -3,6 +3,7 @@ package br.com.dbc.vemser.iShirts.controller;
 import br.com.dbc.vemser.iShirts.controller.interfaces.VariacaoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.service.VariacaoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/variacao")
@@ -27,7 +27,7 @@ public class VariacaoController implements VariacaoControllerInterface {
     private final VariacaoService variacaoService;
 
     @PostMapping
-    public ResponseEntity<VariacaoDTO> criarVariacao(@RequestBody @Valid VariacaoCreateDTO variacaoCreateDTO){
+    public ResponseEntity<VariacaoDTO> criarVariacao(@RequestBody @Valid VariacaoCreateDTO variacaoCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(variacaoService.criarVariacao(variacaoCreateDTO), HttpStatus.CREATED);
     }
 
