@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,4 +44,8 @@ public class Produto {
     @Column(name = "EDITADO")
     @UpdateTimestamp
     private Timestamp editado;
+
+    @OneToMany(mappedBy = "produto")
+    @ToString.Exclude
+    private List<Variacao> variacaoList;
 }
