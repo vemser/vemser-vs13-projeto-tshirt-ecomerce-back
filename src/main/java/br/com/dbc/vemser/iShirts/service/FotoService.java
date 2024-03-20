@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,15 +28,12 @@ public class FotoService {
 
     public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws Exception {
 
-//       VariacaoDTO variacaoDTO = variacaoService.listarPorID(idVariacao);
-//       VariacaoCreateDTO variacaoCreateDTO = objectMapper.convertValue(variacaoDTO, VariacaoCreateDTO.class);
+       Variacao variacao = variacaoService.buscarPorId(idVariacao);
 
        Foto fotoEntity = gerarFoto(arquivo);
-//       fotoEntity.setIdFoto(variacaoDTO.getFoto().getIdFoto());
+       fotoEntity.setIdFoto(idVariacao);
+       fotoEntity.setVariacao(variacao);
        fotoEntity = fotoRepository.save(fotoEntity);
-
-//       variacaoCreateDTO.setFoto(fotoEntity);
-//       variacaoService.criarVariacao(variacaoCreateDTO);
 
        FotoDTO fotoDTO = objectMapper.convertValue(fotoEntity, FotoDTO.class);
        return fotoDTO;
