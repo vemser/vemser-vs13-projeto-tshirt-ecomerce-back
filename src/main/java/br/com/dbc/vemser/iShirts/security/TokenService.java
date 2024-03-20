@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.iShirts.security;
 
-import br.com.dbc.vemser.iShirts.model.Usuario;
+import br.com.dbc.vemser.iShirts.model.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,7 +36,7 @@ public class TokenService {
 
         return TOKEN_PREFIX + " " +
                 Jwts.builder()
-                        .setIssuer("EcoSOS")
+                        .setIssuer("IShirts")
                         .claim(Claims.ID, usuario.getIdUsuario().toString())
                         .claim(CARGOS_CLAIM, cargos)
                         .setIssuedAt(now)

@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+
 @RestController
 @RequestMapping("/auth")
 @Validated
-@Tag(name = "Auth")
+@Tag(name = "Autenticação", description = "Endpoint de Autenticação")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -57,7 +58,7 @@ public class AuthController {
     }
 
     @GetMapping("/usuario-logado")
-    public String usuarioLogado() throws Exception{
+    public String usuarioLogado() {
         return usuarioService.buscarUsuarioLogado();
     }
 }

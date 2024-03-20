@@ -5,6 +5,7 @@ import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.model.Cargo;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ObjectMapper objectMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CargoService cargoService;
 
     private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     private static final String MSG_USUARIO_NAO_ENCONTRADO_INATIVO = "Usuário não encontrado ou já está inativo";
@@ -70,10 +73,8 @@ public class UsuarioService {
         }
 
 
-        String senhaCriptografada = passwordEncoder.encode(usuarioAtualizado.getSenha());
         usuarioAtualizadoEntidade = updateParaUsuario(usuarioAtualizado, usuarioAtualizadoEntidade);
         usuarioAtualizadoEntidade.setAtivo(Ativo.ATIVO);
-        usuarioAtualizadoEntidade.setSenha(senhaCriptografada);
         usuarioRepository.save(usuarioAtualizadoEntidade);
         return converterParaUsuarioDTOComId(usuarioAtualizadoEntidade);
     }
@@ -90,8 +91,15 @@ public class UsuarioService {
         validarDadosUsuarioCreate(usuario);
         verificarExistenciaEmail(usuario.getEmail());
 
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        Cargo cargo = cargoService.buscarCargoPorId(usuario.getCargos().iterator().next().getIdCargo());
+
         Usuario novoUsuario = createParaUsuario(usuario);
         novoUsuario.setAtivo(Ativo.ATIVO);
+        novoUsuario.setSenha(senhaCriptografada);
+        novoUsuario.setCargos(new HashSet<>());
+        novoUsuario.getCargos().add(cargo);
+
         usuarioRepository.save(novoUsuario);
         return converterParaUsuarioDTOComId(novoUsuario);
     }
