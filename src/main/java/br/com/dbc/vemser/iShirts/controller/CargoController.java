@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/cargo")
 @Validated
-@Tag(name = "Cargo", description = "Endpoint de Cargo")
+@Tag(name = "Cargo", description = "Controller responsável pelas operações relacionadas à cargo.")
 @RequiredArgsConstructor
 public class CargoController {
     private final CargoService cargoService;

@@ -1,19 +1,25 @@
 package br.com.dbc.vemser.iShirts.controller;
 
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.AuthControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.auth.*;
 import br.com.dbc.vemser.iShirts.dto.usuario.*;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.security.TokenService;
 import br.com.dbc.vemser.iShirts.service.UsuarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.AuthenticationException;
+
 
 import javax.validation.Valid;
 
@@ -23,33 +29,42 @@ import javax.validation.Valid;
 @Validated
 @Tag(name = "Autenticação", description = "Endpoint de Autenticação")
 @RequiredArgsConstructor
-public class AuthController {
+@Slf4j
+public class AuthController implements AuthControllerInterface {
 
     private final TokenService tokenService;
     public final AuthenticationManager authenticationManager;
     public final UsuarioService usuarioService;
 
     @PostMapping("/login")
-    public String auth(@RequestBody @Valid LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getEmail(),
-                        loginDTO.getSenha()
-                );
+    public String auth(@RequestBody @Valid LoginDTO loginDTO) throws RegraDeNegocioException {
 
-        Authentication authentication =
-                authenticationManager.authenticate(
-                        usernamePasswordAuthenticationToken);
+        try {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getEmail(),
+                            loginDTO.getSenha()
+                    );
+            Authentication authentication =
+                    authenticationManager.authenticate(
+                            usernamePasswordAuthenticationToken);
+            Usuario usuarioValidado = (Usuario) authentication.getPrincipal();
+            return tokenService.generateToken(usuarioValidado);
+        } catch (AuthenticationException e) {
+            throw new RegraDeNegocioException("Email ou senha invalido");
+        }
 
-        Usuario usuarioValidado = (Usuario) authentication.getPrincipal();
-
-        return tokenService.generateToken(usuarioValidado);
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<String> adicionar(@RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws Exception {
-        usuarioService.criarUsuario(usuarioCreateDTO);
-        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
+    @PostMapping("/criar-usuario")
+    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+        UsuarioDTO novoUsuario = usuarioService.criarUsuario(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+    }
+    @PostMapping("/criar-cliente")
+    public ResponseEntity<UsuarioDTO> criarCliente(@Valid @RequestBody ClienteCreateDTO usuario) throws RegraDeNegocioException {
+        UsuarioDTO novoUsuario = usuarioService.criarCliente(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
     @PutMapping("/alterar-senha")

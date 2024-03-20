@@ -49,4 +49,9 @@ public class CargoService {
         return objectMapper.convertValue(cargo, CargoDTO.class);
     }
 
+    public Cargo buscarCargoPorDescricao(String cliente) throws RegraDeNegocioException {
+        return cargoRepository.findByDescricao(cliente)
+                .orElseThrow(() ->
+                        new RegraDeNegocioException("Cargo não encontrado!"));
+    }
 }

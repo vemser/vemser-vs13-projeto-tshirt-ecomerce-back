@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Tag(name = "endereco",description = "Todos os endpoints de endereço")
+@Tag(name = "Endereço", description = "Controller responsável pelas operações relacionadas à endereço.")
 public interface EnderecoControllerInterface {
     @Operation(summary = "Listagem de todos os endereços", description = "Listagem de todos os endereços cadastradas no sistema.")
     @ApiResponses(value = {

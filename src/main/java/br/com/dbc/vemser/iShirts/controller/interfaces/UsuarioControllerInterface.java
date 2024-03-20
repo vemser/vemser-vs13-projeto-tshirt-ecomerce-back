@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller.interfaces;
 
+import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -37,14 +38,6 @@ public interface UsuarioControllerInterface {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
     ResponseEntity<UsuarioDTO> buscarUsuarioPorId(@PathVariable Integer id) throws RegraDeNegocioException;
-
-    @Operation(summary = "Criar novo usuário", description = "API para criar um novo usuário.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Dados para criação do usuário não são válidos."),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
-    })
-    ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar usuário", description = "API para atualizar um usuário existente.")
     @ApiResponses(value = {

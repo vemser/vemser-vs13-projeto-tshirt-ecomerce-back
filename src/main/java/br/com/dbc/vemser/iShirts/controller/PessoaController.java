@@ -57,13 +57,13 @@ public class PessoaController implements PessoaControllerInterface {
     }
 
     @PutMapping("/inativar/{idPessoa}")
-    public ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) {
+    public ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
         pessoaService.inativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/ativar/{idPessoa}")
-    public ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) {
+    public ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
         pessoaService.ativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
