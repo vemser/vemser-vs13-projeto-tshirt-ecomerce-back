@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
+import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -103,7 +104,30 @@ public class UsuarioService {
         usuarioRepository.save(novoUsuario);
         return converterParaUsuarioDTOComId(novoUsuario);
     }
+
+    public UsuarioDTO criarCliente(ClienteCreateDTO usuario) throws RegraDeNegocioException {
+        validarDadosClienteCreate(usuario);
+        verificarExistenciaEmail(usuario.getEmail());
+
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        Cargo cargoCliente = cargoService.buscarCargoPorDescricao("Cliente");
+
+        Usuario novoUsuario = createParaCliente(usuario);
+        novoUsuario.setAtivo(Ativo.ATIVO);
+        novoUsuario.setSenha(senhaCriptografada);
+        novoUsuario.setCargos(new HashSet<>());
+        novoUsuario.getCargos().add(cargoCliente);
+
+        usuarioRepository.save(novoUsuario);
+        return converterParaUsuarioDTOComId(novoUsuario);
+    }
+
     private void validarDadosUsuarioCreate(UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+        if (usuario.getEmail() == null || usuario.getSenha() == null) {
+            throw new RegraDeNegocioException(MSG_EMAIL_SENHA_OBRIGATORIOS);
+        }
+    }
+    private void validarDadosClienteCreate(ClienteCreateDTO usuario) throws RegraDeNegocioException {
         if (usuario.getEmail() == null || usuario.getSenha() == null) {
             throw new RegraDeNegocioException(MSG_EMAIL_SENHA_OBRIGATORIOS);
         }
@@ -157,6 +181,7 @@ public class UsuarioService {
     private UsuarioDTO converterParaUsuarioDTOComId(Usuario entity) {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(entity, UsuarioDTO.class);
         usuarioDTO.setId(entity.getIdUsuario());
+        usuarioDTO.setCargos(entity.getCargos());
         return usuarioDTO;
     }
 
@@ -167,6 +192,10 @@ public class UsuarioService {
     }
 
     private Usuario createParaUsuario(UsuarioCreateDTO entity) {
+        return objectMapper.convertValue(entity, Usuario.class);
+    }
+
+    private Usuario createParaCliente(ClienteCreateDTO entity) {
         return objectMapper.convertValue(entity, Usuario.class);
     }
 }

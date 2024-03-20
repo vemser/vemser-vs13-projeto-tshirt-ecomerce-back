@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.controller;
 
 import br.com.dbc.vemser.iShirts.controller.interfaces.UsuarioControllerInterface;
+import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -38,12 +39,6 @@ public class UsuarioController implements UsuarioControllerInterface {
     public ResponseEntity<UsuarioDTO> buscarUsuarioPorId(@PathVariable Integer id) throws RegraDeNegocioException {
        UsuarioDTO usuario = usuarioService.buscarUsuarioPorId(id);
         return new ResponseEntity<>(usuario, HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
-        UsuarioDTO novoUsuario = usuarioService.criarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
     //TODO Utilizar o GetLoggedId user ao inves de receber Id
