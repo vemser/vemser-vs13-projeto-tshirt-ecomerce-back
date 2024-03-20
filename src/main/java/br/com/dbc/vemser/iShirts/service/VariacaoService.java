@@ -2,6 +2,9 @@ package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.model.Foto;
+import br.com.dbc.vemser.iShirts.model.Produto;
 import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.VariacaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,10 +21,17 @@ public class VariacaoService {
 
     private final VariacaoRepository variacaoRepository;
     private final ObjectMapper objectMapper;
+    private final ProdutoService produtoService;
 
-    public VariacaoDTO criarVariacao(VariacaoCreateDTO variacaoCreateDTO){
+    private static final String NAO_ENCONTRADO = "Variação não encontrada";
+
+    public VariacaoDTO criarVariacao(VariacaoCreateDTO variacaoCreateDTO) throws RegraDeNegocioException {
+        System.out.println("Passou aqui");
+        Produto produto = produtoService.buscarPorId(variacaoCreateDTO.getIdProduto());
+
+
         Variacao variacaoEntity = objectMapper.convertValue(variacaoCreateDTO, Variacao.class);
-        variacaoEntity.setAtivo("1");
+        variacaoEntity.setProduto(produto);
         Variacao variacaoSalva = variacaoRepository.save(variacaoEntity);
 
         return objectMapper.convertValue(variacaoSalva, VariacaoDTO.class);
@@ -67,6 +77,11 @@ public class VariacaoService {
 
         variacao.setAtivo("0");
         variacaoRepository.save(variacao);
+    }
+
+    public Variacao buscarPorId(Integer id) throws RegraDeNegocioException {
+        Variacao variacao = variacaoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
+        return variacao;
     }
 
 }
