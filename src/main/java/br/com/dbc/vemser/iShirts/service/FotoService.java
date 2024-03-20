@@ -4,7 +4,6 @@ import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
-import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.FotoRepository;
 import br.com.dbc.vemser.iShirts.utils.MediaTypeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
