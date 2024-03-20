@@ -1,10 +1,14 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.VariacaoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.service.VariacaoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +22,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @Tag(name = "Variação", description = "Crud de variação")
-public class VariacaoController {
+public class VariacaoController implements VariacaoControllerInterface {
 
     private final VariacaoService variacaoService;
 
@@ -33,8 +37,8 @@ public class VariacaoController {
     }
 
     @GetMapping("/todos-variacoes")
-    public ResponseEntity<List<VariacaoDTO>> listarVariacoes(){
-        return new ResponseEntity<>(variacaoService.listarVariacoes(), HttpStatus.OK);
+    public ResponseEntity<Page<VariacaoDTO>> listarVariacoes(@PageableDefault(size = 20, page = 0) Pageable pageable) {
+        return new ResponseEntity<>(variacaoService.listarVariacoes(pageable), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

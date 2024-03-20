@@ -6,6 +6,8 @@ import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.VariacaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,11 +32,9 @@ public class VariacaoService {
         return objectMapper.convertValue(variacao, VariacaoDTO.class);
     }
 
-    public List<VariacaoDTO> listarVariacoes() {
-        List<Variacao> variacoes = variacaoRepository.findAll();
-        return variacoes.stream()
-                .map(variacao -> objectMapper.convertValue(variacao, VariacaoDTO.class))
-                .toList();
+    public Page<VariacaoDTO> listarVariacoes(Pageable pageable) {
+        Page<Variacao> variacoesPage = variacaoRepository.findAll(pageable);
+        return variacoesPage.map(variacao -> objectMapper.convertValue(variacao, VariacaoDTO.class));
     }
 
     public VariacaoDTO editarVariacao(Integer id, VariacaoDTO variacaoDTO) throws Exception {
