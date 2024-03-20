@@ -64,4 +64,9 @@ public class ProdutoService {
         return "Produto deletado com sucesso";
     }
 
+    public Produto buscarPorId(Integer id) throws RegraDeNegocioException {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
+        return produto;
+    }
+
 }
