@@ -89,21 +89,23 @@ class FotoServiceTest {
 //
 //    }
 
-//    @Test
-//    void updateFoto() throws RegraDeNegocioException, IOException {
-//        Foto fotoEntity = MockFoto.retornarEntity();
-//        FotoDTO foto = MockFoto.retornarFotoDTOPorEntity(fotoEntity);
-//        MultipartFile arquivo = MockFoto.retornarArquivo();
-//
-//        when(fotoRepository.findById(foto.getIdFoto())).thenReturn(Optional.of(fotoEntity));
-//        when(objectMapper.convertValue(any(), eq(FotoDTO.class))).thenReturn(foto);
-//        when(fotoRepository.save(any())).thenReturn(fotoEntity);
-//
-//        FotoDTO fotoResponse = fotoService.atualizar(foto.getIdFoto(), arquivo);
-//
-//        assertNotNull(fotoResponse);
-//        assertEquals(fotoEntity.getIdFoto(), fotoResponse.getIdFoto());
-//    }
+    @Test
+    @DisplayName("Deve atualizar a foto no banco com sucesso")
+    void updateFoto() throws RegraDeNegocioException, IOException {
+        Foto fotoEntity = MockFoto.retornarEntity();
+        FotoDTO foto = MockFoto.retornarFotoDTOPorEntity(fotoEntity);
+        MultipartFile arquivo = MockFoto.retornarArquivo();
+
+        when(fotoRepository.findById(foto.getIdFoto())).thenReturn(Optional.of(fotoEntity));
+        when(objectMapper.convertValue(any(), eq(FotoDTO.class))).thenReturn(foto);
+        when(fotoRepository.save(any())).thenReturn(fotoEntity);
+        when(mediaTypeUtil.getTipoArquivo(arquivo)).thenReturn("jpg");
+
+        FotoDTO fotoResponse = fotoService.atualizar(foto.getIdFoto(), arquivo);
+
+        assertNotNull(fotoResponse);
+        assertEquals(fotoEntity.getIdFoto(), fotoResponse.getIdFoto());
+    }
     @Test
     @DisplayName("Deve lançar exceção FormatoInválido")
     void deveLancarExcecaoFormatoInvalido() throws RegraDeNegocioException, IOException {
