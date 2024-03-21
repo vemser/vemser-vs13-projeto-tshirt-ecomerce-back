@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 public class VariacaoDTO {
 
-    private Integer idVariacoes;
+    private Integer idVariacao;
 
     private List<Foto> foto;
 

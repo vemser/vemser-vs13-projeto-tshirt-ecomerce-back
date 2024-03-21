@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.CarrinhoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.carrinho.CarrinhoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.carrinho.CarrinhoDTO;
 import br.com.dbc.vemser.iShirts.dto.item.ItemCreateDTO;
@@ -20,26 +21,24 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/carrinho")
 @RequiredArgsConstructor
-public class CarrinhoController {
+public class CarrinhoController implements CarrinhoControllerInterface {
 
     private final CarrinhoService carrinhoService;
 
-
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<CarrinhoDTO> buscarCarrinho() throws RegraDeNegocioException {
         CarrinhoDTO carrinho = carrinhoService.buscarCarrinho();
         return ResponseEntity.ok(carrinho);
     }
-
     @PostMapping
     public ResponseEntity<CarrinhoDTO> createCarrinho(@Valid @RequestBody CarrinhoCreateDTO carrinho) throws RegraDeNegocioException {
         CarrinhoDTO carrinhoDTO = carrinhoService.criarCarrinho(carrinho);
         return ResponseEntity.status(HttpStatus.CREATED).body(carrinhoDTO);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CarrinhoDTO> atualizarCarrinho(@PathVariable Integer id, @Valid  @RequestBody Carrinho carrinho) throws RegraDeNegocioException {
-        CarrinhoDTO carrinhoAtualizado = carrinhoService.atualizarCarrinho(id, carrinho);
+    @PutMapping
+    public ResponseEntity<CarrinhoDTO> atualizarCarrinho() throws RegraDeNegocioException {
+        CarrinhoDTO carrinhoAtualizado = carrinhoService.atualizarCarrinho();
         return ResponseEntity.ok(carrinhoAtualizado);
     }
 
@@ -48,7 +47,7 @@ public class CarrinhoController {
         carrinhoService.deleteCarrinho(id);
         return ResponseEntity.noContent().build();
     }
-    @DeleteMapping("")
+    @DeleteMapping()
     public ResponseEntity<Void> limparCarrinho() throws RegraDeNegocioException {
         carrinhoService.limparCarrinho();
         return ResponseEntity.noContent().build();

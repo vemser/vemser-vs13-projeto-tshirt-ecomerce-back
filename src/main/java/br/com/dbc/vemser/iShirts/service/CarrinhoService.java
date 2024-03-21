@@ -13,6 +13,8 @@ import br.com.dbc.vemser.iShirts.repository.CarrinhoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,6 +36,8 @@ public class CarrinhoService {
         if(carrinho == null){
             carrinho = new Carrinho();
             carrinho.setUsuario(usuario);
+            carrinho.setTotal(BigDecimal.ZERO);
+            carrinho = carrinhoRepository.save(carrinho);
         }
         return carrinho;
     }
@@ -42,12 +46,15 @@ public class CarrinhoService {
         List<Item> itens = itemService.criarItens(carrinhoCreateDTO.getItens());
         Carrinho carrinho = buscarCarrinhoUsuarioLogado();
         carrinho.setItens(itens);
+        calcularTotal(carrinho);
         return converterDTO(carrinhoRepository.save(carrinho));
     }
 
-    public CarrinhoDTO atualizarCarrinho(Integer id, Carrinho carrinho) throws RegraDeNegocioException {
-        Carrinho carrinhoExistente = buscarCarrinhoPorId(id);
-        carrinhoExistente.setItens(carrinho.getItens());
+
+    public CarrinhoDTO atualizarCarrinho() throws RegraDeNegocioException {
+        Carrinho carrinho = buscarCarrinhoUsuarioLogado();
+        itemService.atualizarItens(carrinho.getItens());
+        calcularTotal(carrinho);
         return converterDTO(carrinhoRepository.save(carrinho));
     }
 
@@ -61,6 +68,7 @@ public class CarrinhoService {
         Item item = itemService.salvarItem(itemService.criarItem(itemCreateDTO));
 
         carrinho.getItens().add(item);
+        calcularTotal(carrinho);
 
         return converterDTO(carrinhoRepository.save(carrinho));
     }
@@ -71,22 +79,28 @@ public class CarrinhoService {
 
         carrinho.getItens().remove(item);
         itemService.delete(item);
+        calcularTotal(carrinho);
 
         return converterDTO(carrinhoRepository.save(carrinho));
     }
 
     public void limparCarrinho() throws RegraDeNegocioException {
         Carrinho carrinho = buscarCarrinhoUsuarioLogado();
-        for (Item item : carrinho.getItens()) {
+        List<Item> itens = new ArrayList<>(carrinho.getItens());
+        carrinho.getItens().clear();
+        for (Item item : itens) {
+            System.out.println(item.getIdItem());
             itemService.delete(item);
         }
-        carrinho.getItens().clear();
+
+        calcularTotal(carrinho);
 
         carrinhoRepository.save(carrinho);
     }
     public void limparCarrinhoPedidoFeito() throws RegraDeNegocioException {
         Carrinho carrinho = buscarCarrinhoUsuarioLogado();
         carrinho.getItens().clear();
+        calcularTotal(carrinho);
 
         carrinhoRepository.save(carrinho);
     }
@@ -98,18 +112,30 @@ public class CarrinhoService {
                 .findFirst().orElseThrow(() -> new RegraDeNegocioException("Item não encontrado no carrinho"));
         item.setQuantidade(quantidadeDTO.getQuantidade());
         itemService.calcularSubTotal(item);
-        return converterDTO(carrinho);
+        calcularTotal(carrinho);
+        return converterDTO(carrinhoRepository.save(carrinho));
     }
     public CarrinhoDTO buscarCarrinho() throws RegraDeNegocioException {
         return converterDTO(buscarCarrinhoUsuarioLogado());
     }
 
+    public void calcularTotal(Carrinho carrinho) {
+        BigDecimal total = BigDecimal.ZERO;
+        List<Item> itens = carrinho.getItens();
+
+        for (Item item : itens) {
+            BigDecimal subTotal = item.getSubTotal();
+            total = total.add(subTotal);
+        }
+
+        carrinho.setTotal(total);
+    }
     public CarrinhoDTO converterDTO(Carrinho carrinho){
         CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
         carrinhoDTO.setIdUsuario(carrinho.getUsuario().getIdUsuario());
         List<ItemDTO> itensDTO = itemService.converterDTO(carrinho.getItens());
         carrinhoDTO.setItens(itensDTO);
-        carrinho.setIdCarrinho(carrinho.getIdCarrinho());
+        carrinhoDTO.setIdCarrinho(carrinho.getIdCarrinho());
         return carrinhoDTO;
     }
 

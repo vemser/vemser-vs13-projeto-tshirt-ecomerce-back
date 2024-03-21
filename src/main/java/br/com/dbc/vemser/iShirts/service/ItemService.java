@@ -2,6 +2,7 @@ package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.item.ItemCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.item.ItemDTO;
+import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Item;
 import br.com.dbc.vemser.iShirts.model.Variacao;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +45,12 @@ public class ItemService {
         }
        return itemRepository.saveAll(itens);
     }
+    public void atualizarItens(List<Item> itens) {
+        for(Item item : itens){
+            calcularSubTotal(item);
+            itemRepository.save(item);
+        }
+    }
 
     public List<ItemDTO> converterDTO(List<Item> itens) {
         List<ItemDTO> itensDTO = new ArrayList<>();
@@ -58,13 +66,19 @@ public class ItemService {
     }
 
     public void calcularSubTotal(Item item) {
-        int quantidade = item.getQuantidade();
-        double preco = item.getVariacao().getPreco();
-        double taxaDesconto = item.getVariacao().getTaxaDesconto();
+        BigDecimal quantidade = BigDecimal.valueOf(item.getQuantidade());
+        BigDecimal preco = BigDecimal.valueOf(item.getVariacao().getPreco());
+        BigDecimal taxaDesconto = BigDecimal.valueOf(item.getVariacao().getTaxaDesconto());
+        BigDecimal taxaDescontoDecimal = taxaDesconto.divide(BigDecimal.valueOf(100));
 
-        double subTotal = quantidade * preco * (1 - taxaDesconto);
+        BigDecimal subTotal = quantidade
+                .multiply(preco.subtract(preco.multiply(taxaDescontoDecimal)));
         item.setSubTotal(subTotal);
+
     }
 
 
+    public void deletePorId(Integer idItem) {
+        itemRepository.deleteById(idItem);
+    }
 }

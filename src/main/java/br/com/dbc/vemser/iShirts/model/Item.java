@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -25,6 +26,6 @@ public class Item {
     private Variacao variacao;
 
     private Integer quantidade;
-    private double subTotal;
+    private BigDecimal subTotal;
 
 }

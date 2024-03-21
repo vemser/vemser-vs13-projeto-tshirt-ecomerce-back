@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ItemDTO {
     private Integer idItem;
-    private VariacaoDTO variacaoDTO;
+    private VariacaoDTO variacao;
     private Integer quantidade;
     private double subTotal;
 }

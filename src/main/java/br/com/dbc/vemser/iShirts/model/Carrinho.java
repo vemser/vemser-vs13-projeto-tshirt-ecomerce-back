@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class Carrinho {
     @JoinColumn(name = "ID_USUARIO", unique = true)
     private Usuario usuario;
 
+    private BigDecimal total;
     @ManyToMany
     @JoinTable(name = "ITEM_CARRINHO",
             joinColumns = @JoinColumn(name = "ID_CARRINHO"),
