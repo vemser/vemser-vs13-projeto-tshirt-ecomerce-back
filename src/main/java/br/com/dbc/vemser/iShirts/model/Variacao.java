@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,11 +30,12 @@ public class Variacao {
 
     @ManyToOne
     @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID_PRODUTO")
+    @JsonIgnore
     private Produto produto;
 
     @OneToMany(mappedBy = "variacao")
     @Column(name = "ID_FOTO")
-    private List<Foto> foto;
+    private List<Foto> fotos = new ArrayList<>();
 
     @Column(name = "SKU")
     private String sku;

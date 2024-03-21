@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,5 +30,6 @@ public class Foto {
 
     @ManyToOne
     @JoinColumn(name = "ID_VARIACAO", referencedColumnName = "ID_VARIACAO")
+    @JsonIgnore
     private Variacao variacao;
 }

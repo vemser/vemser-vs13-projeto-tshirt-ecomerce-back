@@ -2,6 +2,7 @@ package br.com.dbc.vemser.iShirts.controller.interfaces;
 
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
+import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,7 +27,7 @@ public interface VariacaoControllerInterface {
             @ApiResponse(responseCode = "404", description = "Variação não encontrada."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<VariacaoDTO> criarVariacao(@RequestBody @Valid VariacaoCreateDTO variacaoCreateDTO);
+    ResponseEntity<VariacaoDTO> criarVariacao(@RequestBody @Valid VariacaoCreateDTO variacaoCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar variação por ID", description = "Lista as variações no sistema por ID.")
     @ApiResponses(value = {

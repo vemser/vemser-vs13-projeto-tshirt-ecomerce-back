@@ -148,7 +148,7 @@ public class PessoaServiceTest {
 
     @DisplayName("Teste_para_inativar_uma_Pessoa")
     @Test
-    public void testarInativarPessoa() {
+    public void testarInativarPessoa() throws RegraDeNegocioException {
         Integer idPessoa = 1;
         Pessoa pessoa = new Pessoa();
         pessoa.setIdPessoa(idPessoa);
@@ -164,7 +164,7 @@ public class PessoaServiceTest {
 
     @DisplayName("Teste_para_ativar_uma_Pessoa")
     @Test
-    public void testarAtivarPessoa() {
+    public void testarAtivarPessoa() throws RegraDeNegocioException {
         Integer idPessoa = 1;
         Pessoa pessoa = new Pessoa();
         pessoa.setIdPessoa(idPessoa);
