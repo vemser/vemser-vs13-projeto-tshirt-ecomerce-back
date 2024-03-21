@@ -69,4 +69,24 @@ public interface VariacaoControllerInterface {
     })
     ResponseEntity<String> deletarVariacao(@PathVariable("id") Integer id) throws Exception;
 
+    @Operation(summary = "Ativar uma variação por ID", description = "Ativa uma variação por ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Variação ativada com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
+            @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(responseCode = "404", description = "Variação não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
+    })
+    ResponseEntity<String> ativarVariacao(@PathVariable("idProduto") Integer idProduto) throws RegraDeNegocioException;
+
+    @Operation(summary = "Desativa uma variação por ID", description = "Desativa uma variação por ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Variação desativada com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
+            @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(responseCode = "404", description = "Variação não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
+    })
+    ResponseEntity<String> desativarVariacao(@PathVariable("idProduto") Integer idProduto) throws RegraDeNegocioException;
+
 }

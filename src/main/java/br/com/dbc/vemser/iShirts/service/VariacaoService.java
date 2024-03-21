@@ -13,8 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-
 @RequiredArgsConstructor
 @Service
 public class VariacaoService {
@@ -69,11 +67,19 @@ public class VariacaoService {
         variacaoRepository.delete(variacao);
     }
 
-    public void desativarVariacao(Integer id) throws EntityNotFoundException {
+    public void desativarVariacao(Integer id) throws RegraDeNegocioException {
         Variacao variacao = variacaoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Variacao não encontrada"));
+                .orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
 
-        variacao.setAtivo("0");
+        variacao.setAtivo(String.valueOf(Ativo.INATIVO.getIndex()));
+        variacaoRepository.save(variacao);
+    }
+
+    public void ativarVariacao(Integer id) throws RegraDeNegocioException {
+        Variacao variacao = variacaoRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
+
+        variacao.setAtivo(String.valueOf(Ativo.ATIVO.getIndex()));
         variacaoRepository.save(variacao);
     }
 
