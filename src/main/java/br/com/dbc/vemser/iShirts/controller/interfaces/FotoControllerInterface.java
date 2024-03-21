@@ -22,7 +22,7 @@ public interface FotoControllerInterface {
     )
     @PostMapping("/{idVariacao}")
     public ResponseEntity<FotoDTO> criarFoto(@PathVariable("idVariacao") Integer idVariacao,
-                                             @RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException;
+                                             @RequestBody(required = true) MultipartFile arquivo) throws Exception;
 
     @Operation(summary = "Atualizar uma foto", description = "Atualiza uma foto no banco de dados, formatos suportados: WEBP, JPG, JPEG, GIF, PNG, BMP")
     @ApiResponses(
