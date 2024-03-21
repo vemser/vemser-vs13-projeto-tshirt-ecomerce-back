@@ -5,12 +5,15 @@ import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Produto;
 import br.com.dbc.vemser.iShirts.model.Variacao;
+import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.VariacaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 
 @RequiredArgsConstructor
 @Service
@@ -23,9 +26,7 @@ public class VariacaoService {
     private static final String NAO_ENCONTRADO = "Variação não encontrada";
 
     public VariacaoDTO criarVariacao(VariacaoCreateDTO variacaoCreateDTO) throws RegraDeNegocioException {
-        System.out.println("Passou aqui");
         Produto produto = produtoService.buscarPorId(variacaoCreateDTO.getIdProduto());
-
 
         Variacao variacaoEntity = objectMapper.convertValue(variacaoCreateDTO, Variacao.class);
         variacaoEntity.setProduto(produto);
@@ -68,9 +69,9 @@ public class VariacaoService {
         variacaoRepository.delete(variacao);
     }
 
-    public void desativarVariacao(Integer id) throws RegraDeNegocioException {
+    public void desativarVariacao(Integer id) throws EntityNotFoundException {
         Variacao variacao = variacaoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Variacao não encontrada"));
 
         variacao.setAtivo("0");
         variacaoRepository.save(variacao);

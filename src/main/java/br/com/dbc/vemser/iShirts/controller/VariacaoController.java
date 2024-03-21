@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 @RestController
@@ -50,6 +51,16 @@ public class VariacaoController implements VariacaoControllerInterface {
     public ResponseEntity<String> deletarVariacao(@PathVariable("id") Integer id) throws Exception {
         variacaoService.deletarVariacao(id);
         return new ResponseEntity<>("Variação deletada com sucesso", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/desativar/{idProduto}")
+    public ResponseEntity<String> desativarVariacao(@PathVariable("idProduto") Integer idProduto) {
+        try {
+            variacaoService.desativarVariacao(idProduto);
+            return ResponseEntity.ok("Variação desativada com sucesso");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
