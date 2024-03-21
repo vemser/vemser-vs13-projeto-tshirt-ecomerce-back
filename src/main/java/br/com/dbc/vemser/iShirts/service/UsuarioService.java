@@ -198,4 +198,12 @@ public class UsuarioService {
     private Usuario createParaCliente(ClienteCreateDTO entity) {
         return objectMapper.convertValue(entity, Usuario.class);
     }
+
+    public Usuario buscarUsuarioId(Integer id) throws RegraDeNegocioException {
+        return usuarioRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado com o ID: " + id));
+    }
+    public Usuario buscarUsuarioLogadoEntity() throws RegraDeNegocioException {
+        Integer id = buscarIdUsuarioLogado();
+        return usuarioRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado com o ID: " + id));
+    }
 }

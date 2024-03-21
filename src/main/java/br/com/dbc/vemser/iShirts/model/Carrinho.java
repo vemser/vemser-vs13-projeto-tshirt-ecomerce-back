@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -21,6 +22,13 @@ public class Carrinho {
     @Column(name = "ID_CARRINHO")
     private Integer idCarrinho;
 
-    @OneToMany(mappedBy = "carrinho")
-    private List<ItemCarrinho> itensCarrinho;
+    @OneToOne
+    @JoinColumn(name = "ID_USUARIO", unique = true)
+    private Usuario usuario;
+
+    @ManyToMany
+    @JoinTable(name = "ITEM_CARRINHO",
+            joinColumns = @JoinColumn(name = "ID_CARRINHO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_ITEM"))
+    private List<Item> itens = new ArrayList<>();
 }

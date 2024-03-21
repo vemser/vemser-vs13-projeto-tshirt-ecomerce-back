@@ -24,7 +24,7 @@ public class Item {
     @JoinColumn(name = "id_variacao")
     private Variacao variacao;
 
-    private int quantidade;
+    private Integer quantidade;
     private double subTotal;
 
 }
