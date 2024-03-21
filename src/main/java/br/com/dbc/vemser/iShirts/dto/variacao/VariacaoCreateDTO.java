@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Data
 public class VariacaoCreateDTO {
 
+    @NotBlank(message = "O idProduto não pode estar em branco ou nulo")
     private Integer idProduto;
 
     @NotBlank(message = "O SKU não pode estar em branco")
