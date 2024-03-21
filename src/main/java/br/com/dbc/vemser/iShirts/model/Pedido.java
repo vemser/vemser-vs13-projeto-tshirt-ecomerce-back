@@ -10,8 +10,7 @@ import java.util.Date;
 
 
 @Data
-@Entity
-@Table(name = "PEDIDO")
+@Entity(name = "PEDIDO")
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PEDIDO")
