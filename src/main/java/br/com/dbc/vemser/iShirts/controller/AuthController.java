@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.controller;
 
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.AuthControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.auth.*;
 import br.com.dbc.vemser.iShirts.dto.usuario.*;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
@@ -29,7 +30,7 @@ import javax.validation.Valid;
 @Tag(name = "Autenticação", description = "Endpoint de Autenticação")
 @RequiredArgsConstructor
 @Slf4j
-public class AuthController {
+public class AuthController implements AuthControllerInterface {
 
     private final TokenService tokenService;
     public final AuthenticationManager authenticationManager;

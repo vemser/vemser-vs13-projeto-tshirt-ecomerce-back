@@ -24,7 +24,7 @@ public class FotoController implements FotoControllerInterface {
 
     @PostMapping("/{idVariacao}")
     public ResponseEntity<FotoDTO> criarFoto(@PathVariable("idVariacao") Integer idVariacao,
-            @RequestBody(required = true) MultipartFile arquivo) throws IOException, RegraDeNegocioException {
+            @RequestBody(required = true) MultipartFile arquivo) throws Exception {
         return new ResponseEntity<>(fotoService.criar(arquivo, idVariacao), HttpStatus.CREATED);
     }
 
