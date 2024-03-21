@@ -1,8 +1,6 @@
 package br.com.dbc.vemser.iShirts.dto.variacao;
 
 import br.com.dbc.vemser.iShirts.model.Foto;
-import br.com.dbc.vemser.iShirts.model.Produto;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

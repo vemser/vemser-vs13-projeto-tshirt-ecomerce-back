@@ -3,7 +3,6 @@ package br.com.dbc.vemser.iShirts.service;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
-import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.model.Produto;
 import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.VariacaoRepository;
@@ -12,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -38,7 +35,7 @@ public class VariacaoService {
     }
 
     public VariacaoDTO listarPorID(Integer id) throws Exception {
-        Variacao variacao = variacaoRepository.findById(id).orElseThrow(() -> new Exception("Variacao não encontrada"));
+        Variacao variacao = variacaoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
         return objectMapper.convertValue(variacao, VariacaoDTO.class);
     }
 
@@ -47,9 +44,9 @@ public class VariacaoService {
         return variacoesPage.map(variacao -> objectMapper.convertValue(variacao, VariacaoDTO.class));
     }
 
-    public VariacaoDTO editarVariacao(Integer id, VariacaoDTO variacaoDTO) throws Exception {
+    public VariacaoDTO editarVariacao(Integer id, VariacaoDTO variacaoDTO) throws RegraDeNegocioException {
         Variacao variacaoExistente = variacaoRepository.findById(id)
-                .orElseThrow(() -> new Exception("Variacao não encontrada"));
+                .orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
 
         variacaoExistente.setSku(variacaoDTO.getSku());
         variacaoExistente.setCor(variacaoDTO.getCor());
@@ -64,16 +61,16 @@ public class VariacaoService {
         return objectMapper.convertValue(variacaoAtualizada, VariacaoDTO.class);
     }
 
-    public void deletarVariacao(Integer id) throws Exception {
+    public void deletarVariacao(Integer id) throws RegraDeNegocioException {
         Variacao variacao = variacaoRepository.findById(id)
-                .orElseThrow(() -> new Exception("Variacao não encontrada"));
+                .orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
 
         variacaoRepository.delete(variacao);
     }
 
-    public void desativarVariacao(Integer id) throws Exception {
+    public void desativarVariacao(Integer id) throws RegraDeNegocioException {
         Variacao variacao = variacaoRepository.findById(id)
-                .orElseThrow(() -> new Exception("Variacao não encontrada"));
+                .orElseThrow(() -> new RegraDeNegocioException("Variacao não encontrada"));
 
         variacao.setAtivo("0");
         variacaoRepository.save(variacao);
