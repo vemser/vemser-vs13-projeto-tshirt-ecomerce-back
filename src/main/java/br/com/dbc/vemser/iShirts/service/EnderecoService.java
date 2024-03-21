@@ -15,9 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +47,6 @@ public class EnderecoService {
 
     public EnderecoDTO salvarEndereco(EnderecoCreateDTO dto) throws RegraDeNegocioException {
         Endereco enderecoEntidade = retornarEntidade(dto);
-        enderecoEntidade.setCriadoEm(Date.valueOf(LocalDate.now()));
 
         Endereco novoEndereco = this.enderecoRepository.save(enderecoEntidade);
 
@@ -76,8 +76,6 @@ public class EnderecoService {
         enderecoAtualizado.setEstado(dto.getEstado());
         enderecoAtualizado.setComplemento(dto.getComplemento());
         enderecoAtualizado.setReferencia(dto.getReferencia());
-        enderecoAtualizado.setCriadoEm(dto.getCriadoEm());
-        enderecoAtualizado.setEditadoEm(Date.valueOf(LocalDate.now()));
         enderecoAtualizado.setLogradouro(dto.getLogradouro());
         enderecoAtualizado.setNumero(dto.getNumero());
         enderecoAtualizado.setPais(dto.getPais());
@@ -102,8 +100,8 @@ public class EnderecoService {
     }
 
     private EnderecoDTO retornarDTO(Endereco endereco){
-
-        return this.objectMapper.convertValue(endereco,EnderecoDTO.class);
+    EnderecoDTO dto = this.objectMapper.convertValue(endereco,EnderecoDTO.class);
+        return dto;
     }
 
 }

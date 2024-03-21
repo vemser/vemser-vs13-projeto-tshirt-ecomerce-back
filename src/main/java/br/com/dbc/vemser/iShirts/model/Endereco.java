@@ -1,15 +1,21 @@
 package br.com.dbc.vemser.iShirts.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "Endereco")
 public class Endereco {
     @Id
@@ -18,8 +24,9 @@ public class Endereco {
     @Column(name = "ID_ENDERECO")
     private Integer idEndereco;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL )
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "id_pessoa",referencedColumnName = "id_pessoa")
+    @JsonIgnore
     private Pessoa pessoa;
 
     @Column(name = "id_Pessoa",updatable = false,insertable = false)
@@ -40,6 +47,9 @@ public class Endereco {
     @Column(name = "bairro")
     private String bairro;
 
+    @Column(name = "Cidade")
+    private String cidade;
+
     @Column(name = "cep")
     private String cep;
 
@@ -49,13 +59,13 @@ public class Endereco {
     @Column(name = "pais")
     private String pais;
 
-    @Column(name = "criado")
+    @Column(name = "criado",updatable = false,insertable = false)
     @CreationTimestamp
-    private Date criadoEm;
+    private Timestamp criadoEm;
 
-    @Column(name = "editado")
+    @Column(name = "editado",updatable = false,insertable = false)
     @UpdateTimestamp
-    private Date editadoEm;
+    private Timestamp editadoEm;
 
 
 
