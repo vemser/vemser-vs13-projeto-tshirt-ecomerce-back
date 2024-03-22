@@ -171,7 +171,7 @@ public class UsuarioService {
             throw new RegraDeNegocioException("Usuário ou Senha inválida");
         }
         if (!passwordEncoder.matches(alteraSenhaDTO.getSenhaAtual(), usuarioAtualizar.get().getSenha())) {
-            throw new RegraDeNegocioException("Usuário ou Senha inválida");
+            throw new RegraDeNegocioException("Usuário ou Senha inválida 2");
         }
         String senhaNovaCriptografada = passwordEncoder.encode(alteraSenhaDTO.getSenhaNova());
         usuarioAtualizar.get().setSenha(senhaNovaCriptografada);

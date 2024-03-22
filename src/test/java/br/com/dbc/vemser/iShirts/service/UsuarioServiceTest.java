@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.iShirts.service;
 
+import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
+import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
@@ -15,7 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +39,11 @@ class UsuarioServiceTest {
     private ObjectMapper objectMapper;
     @Mock
     private UsuarioRepository usuarioRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private CargoService cargoService;
+    @Spy
     @InjectMocks
     private UsuarioService usuarioService;
 
@@ -116,6 +129,8 @@ class UsuarioServiceTest {
 
         when(objectMapper.convertValue(usuarioCreateDTO, Usuario.class)).thenReturn(usuario);
         when(objectMapper.convertValue(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
+        when(passwordEncoder.encode(anyString())).thenReturn("SenhaCriptografada");
+        when(cargoService.buscarCargoPorId(any())).thenReturn(MockUsuario.retornaCargo());
 
         UsuarioDTO usuarioDTOResponse = usuarioService.criarUsuario(usuarioCreateDTO);
 
@@ -124,6 +139,8 @@ class UsuarioServiceTest {
                 () -> assertEquals(usuarioDTOResponse, usuarioDTO)
         );
     }
+
+
     @Test
     @DisplayName("Não deve criar usuario com email ou senha inválidos")
     void naoDevCriarUsuarioemailSenhaInv() throws RegraDeNegocioException {
@@ -226,4 +243,93 @@ class UsuarioServiceTest {
         }, "Usuário não encontrado");
     }
 
+
+    @Test
+    @DisplayName("Deve criar cliente com sucesso")
+    public void criaClienteComSucesso() throws RegraDeNegocioException {
+        Usuario usuario = MockUsuario.retornarEntity();
+        UsuarioDTO usuarioDTO = MockUsuario.retornarDTOPorEntity(usuario);
+        ClienteCreateDTO usuarioCreateDTO = MockUsuario.retornarClienteCreateDTO();
+
+        when(objectMapper.convertValue(usuarioCreateDTO, Usuario.class)).thenReturn(usuario);
+        when(objectMapper.convertValue(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
+        when(passwordEncoder.encode(anyString())).thenReturn("SenhaCriptografada");
+
+        UsuarioDTO usuarioDTOResponse = usuarioService.criarCliente(usuarioCreateDTO);
+
+        Assertions.assertAll(
+                () -> assertNotNull(usuarioDTOResponse),
+                () -> assertEquals(usuarioDTOResponse, usuarioDTO)
+        );
+    }
+
+    @Test
+    @DisplayName("Deve alterar a senha com sucesso")
+    public void alteraSenhaComSucesso() throws Exception {
+        AlteraSenhaDTO alterar = MockUsuario.retornaSenhaDTO();
+        Usuario usuario = MockUsuario.retornarEntity();
+        UsuarioDTO usuarioDTO = MockUsuario.retornarDTOPorEntity(usuario);
+
+        doReturn(Optional.of(usuario)).when(usuarioService).buscarUsuarioPorEmail(anyString());
+        when(passwordEncoder.encode(anyString())).thenReturn("SenhaCriptografada");
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        when(objectMapper.convertValue(any(Usuario.class), eq(UsuarioDTO.class))).thenReturn(usuarioDTO);
+
+        UsuarioDTO usuarioDTOResponse = usuarioService.alterarSenha(alterar);
+
+        assertNotNull(usuarioDTOResponse);
+        assertEquals(usuarioDTOResponse, usuarioDTO);
+    }
+
+    @Test
+    @DisplayName("Usuario não existe no banco de dados")
+    public void retornaExceptionSemEntidade(){
+        AlteraSenhaDTO alterar = MockUsuario.retornaSenhaDTO();
+        alterar.setEmail("111");
+
+        assertThrows(RegraDeNegocioException.class, () -> usuarioService.alterarSenha(alterar));
+    }
+
+    @Test
+    @DisplayName("Usuario passa a senha atual errada")
+    public void retornaExceptionDadosDiferentes(){
+        Usuario usuario = MockUsuario.retornarEntity();
+        AlteraSenhaDTO alterar = MockUsuario.retornaSenhaDTO();
+        alterar.setSenhaAtual("SenhaErrada");
+
+        doReturn(Optional.of(usuario)).when(usuarioService).buscarUsuarioPorEmail(anyString());
+
+
+        assertThrows(RegraDeNegocioException.class, () -> usuarioService.alterarSenha(alterar));
+    }
+
+    @Test
+    void testBuscarIdUsuarioLogado() {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(0, "password");
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        Integer idUsuario = usuarioService.buscarIdUsuarioLogado();
+
+        assertNotNull(idUsuario);
+        assertEquals(0, idUsuario);
+    }
+
+    @Test
+    void testBuscarUsuarioLogado() {
+        Authentication authentication = new UsernamePasswordAuthenticationToken("username", "password");
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        String usuarioLogado = usuarioService.buscarUsuarioLogado();
+
+        assertNotNull(usuarioLogado);
+        assertEquals("username", usuarioLogado);
+    }
 }
+
