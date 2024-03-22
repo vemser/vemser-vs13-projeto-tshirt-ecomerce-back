@@ -7,6 +7,7 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,13 +27,13 @@ public class Pedido {
     private StatusPedido status;
 
     @Column(name = "TOTAL_BRUTO")
-    private String totalBruto;
+    private BigDecimal totalBruto;
 
     @Column(name = "DESCONTO")
-    private String desconto;
+    private BigDecimal desconto;
 
     @Column(name = "TOTAL_LIQUIDO")
-    private Date totalLiquido;
+    private BigDecimal totalLiquido;
 
     @Column(name = "CRIADO", columnDefinition = "TIMESTAMP")
     private Date criado;
@@ -44,10 +45,14 @@ public class Pedido {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
     private Pessoa pessoa;
-    @ManyToMany
 
+    @ManyToMany
     @JoinTable(name = "ITEM_PEDIDO",
             joinColumns = @JoinColumn(name = "ID_PEDIDO"),
             inverseJoinColumns = @JoinColumn(name = "ID_ITEM"))
     private List<Item> itens;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cupom", referencedColumnName = "id_cupom")
+    private Cupom cupom;
 }

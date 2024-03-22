@@ -1,11 +1,13 @@
 package br.com.dbc.vemser.iShirts.dto.pedido;
 
+import br.com.dbc.vemser.iShirts.model.Carrinho;
 import br.com.dbc.vemser.iShirts.model.enums.MetodoPagamento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -13,14 +15,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class PedidoCreateDTO {
 
+    @NotNull
     private MetodoPagamento metodoPagamento;
-
-    private String totalBruto;
-
-    private String desconto;
-
-    private Date totalLiquido;
-
-    private Date criado;
+    private Integer idCupom;
 
 }

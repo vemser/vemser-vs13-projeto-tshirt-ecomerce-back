@@ -17,10 +17,4 @@ public class PedidoUpdateDTO {
     private MetodoPagamento metodoPagamento;
 
     private StatusPedido status;
-
-    private Integer idCupom;
-
-    private String desconto;
-
-
 }

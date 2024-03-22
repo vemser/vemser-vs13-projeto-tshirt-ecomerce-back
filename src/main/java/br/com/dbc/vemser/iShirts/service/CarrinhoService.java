@@ -130,6 +130,19 @@ public class CarrinhoService {
 
         carrinho.setTotal(total);
     }
+
+    public BigDecimal calcularValorBrutoTotal(Carrinho carrinho) {
+        BigDecimal total = BigDecimal.ZERO;
+        List<Item> itens = carrinho.getItens();
+
+        for (Item item : itens) {
+            Double subTotal = item.getVariacao().getPreco();
+            total = total.add(BigDecimal.valueOf(subTotal));
+        }
+
+        return total;
+    }
+
     public CarrinhoDTO converterDTO(Carrinho carrinho){
         CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
         carrinhoDTO.setIdUsuario(carrinho.getUsuario().getIdUsuario());

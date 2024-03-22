@@ -49,6 +49,10 @@ public class CupomService {
         cupomRepository.deleteById(idCupom);
     }
 
+    public Cupom getCupom(Integer idCupom) throws RegraDeNegocioException {
+        return cupomRepository.findById(idCupom).orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
+    }
+
     private CupomDTO converterDTO(Cupom cupom) {
         return objectMapper.convertValue(cupom, CupomDTO.class);
     }

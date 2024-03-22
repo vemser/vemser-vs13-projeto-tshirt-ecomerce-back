@@ -4,6 +4,7 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
+import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,6 +101,10 @@ public class PessoaService {
     public Pessoa buscarPessoaPorCpf(String cpf) throws RegraDeNegocioException {
         return pessoaRepository.findByCpf(cpf)
                 .orElseThrow(() -> new RegraDeNegocioException(CPF_INVALIDO));
+    }
+
+    public Pessoa buscarPessoaPorUsuario(Usuario usuario){
+        return pessoaRepository.listarPorIdUsuario(usuario);
     }
 
     private Pessoa existID(Integer idPessoa) throws RegraDeNegocioException {
