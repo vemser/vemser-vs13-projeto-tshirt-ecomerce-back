@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.repository;
 
+import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     boolean existsByEmailAndAtivo(String email, Ativo ativo);
 
     Optional<Usuario> findByEmail(String email);
+
+    List<Usuario> findByPessoa(Pessoa pessoa);
 }
 
