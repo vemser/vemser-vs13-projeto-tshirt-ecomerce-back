@@ -4,8 +4,10 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
+import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
+import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,8 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +27,7 @@ public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
     private final ObjectMapper objectMapper;
+    private final UsuarioRepository usuarioRepository;
 
     private static final String CPF_INVALIDO = "CPF inválido";
     private static final String CPF_EXISTENTE = "CPF já existente";
@@ -101,6 +106,20 @@ public class PessoaService {
         return pessoaRepository.findByCpf(cpf)
                 .orElseThrow(() -> new RegraDeNegocioException(CPF_INVALIDO));
     }
+
+    public void deletarPessoa(Integer idPessoa) throws RegraDeNegocioException {
+        Pessoa pessoa = pessoaRepository.findById(idPessoa)
+                .orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
+
+        Usuario usuario = usuarioRepository.findById(pessoa.getUsuario().getIdUsuario())
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+
+        usuario.setPessoa(null);
+        usuarioRepository.save(usuario);
+
+        pessoaRepository.delete(pessoa);
+    }
+
 
     private Pessoa existID(Integer idPessoa) throws RegraDeNegocioException {
         return pessoaRepository.findById(idPessoa).orElseThrow(() -> new RegraDeNegocioException(ID_NAO_ENCONTRADO));
