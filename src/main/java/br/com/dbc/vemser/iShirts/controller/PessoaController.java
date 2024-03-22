@@ -67,4 +67,10 @@ public class PessoaController implements PessoaControllerInterface {
         pessoaService.ativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping("/{idPessoa}")
+    public ResponseEntity<Void> deletarPessoa(@PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
+        pessoaService.deletarPessoa(idPessoa);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

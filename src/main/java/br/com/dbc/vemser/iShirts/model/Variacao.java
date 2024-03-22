@@ -34,7 +34,7 @@ public class Variacao {
 
     @OneToMany(mappedBy = "variacao", cascade = CascadeType.ALL)
     @Column(name = "ID_FOTO")
-    private List<Foto> foto = new ArrayList<>();
+    private List<Foto> fotos = new ArrayList<>();
 
     @Column(name = "SKU")
     private String sku;
