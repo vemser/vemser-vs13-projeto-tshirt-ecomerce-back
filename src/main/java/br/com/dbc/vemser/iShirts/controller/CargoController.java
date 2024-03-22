@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.controller;
 
+import br.com.dbc.vemser.iShirts.controller.interfaces.CargoControllerInterface;
 import br.com.dbc.vemser.iShirts.dto.cargo.CargoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.cargo.CargoDTO;
 import br.com.dbc.vemser.iShirts.service.CargoService;
@@ -17,7 +18,7 @@ import java.util.List;
 @Validated
 @Tag(name = "Cargo", description = "Controller responsável pelas operações relacionadas à cargo.")
 @RequiredArgsConstructor
-public class CargoController {
+public class CargoController implements CargoControllerInterface {
     private final CargoService cargoService;
 
     @GetMapping
