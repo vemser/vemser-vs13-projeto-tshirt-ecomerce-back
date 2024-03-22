@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockFoto {
     public static Foto retornarEntity() throws IOException {
@@ -19,7 +21,12 @@ public class MockFoto {
         fotoEntity.setIdFoto(1);
         return fotoEntity;
     }
-
+    public static List<Foto> retornarLista() throws IOException {
+        List<Foto> fotos = new ArrayList<>();
+        fotos.add(retornarEntity());
+        fotos.add(retornarEntity());
+        return fotos;
+    }
     public static FotoDTO retornarFotoDTOPorEntity(Foto fotoEntity) throws IOException {
         FotoDTO fotoDTO = new FotoDTO();
         fotoDTO.setIdFoto(fotoEntity.getIdFoto());
