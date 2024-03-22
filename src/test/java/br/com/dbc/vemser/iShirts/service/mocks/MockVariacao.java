@@ -24,18 +24,6 @@ public class MockVariacao {
         return variacao;
     }
 
-    public static VariacaoCreateDTO retornarVariacaoCreateDTO() {
-        VariacaoCreateDTO variacaoCreateDTO = new VariacaoCreateDTO();
-        variacaoCreateDTO.setSku("CAM-BRA-GG-BSC-001");
-        variacaoCreateDTO.setCor("Branco");
-        variacaoCreateDTO.setTamanho("GG");
-        variacaoCreateDTO.setPreco(BigDecimal.valueOf(45.0));
-        variacaoCreateDTO.setTaxaDesconto(0);
-        variacaoCreateDTO.setAtivo("1");
-        variacaoCreateDTO.setIdProduto(1);
-        return variacaoCreateDTO;
-    }
-
     public static Produto retornarProduto() {
         Produto produto = new Produto();
         produto.setIdProduto(1);
@@ -48,7 +36,16 @@ public class MockVariacao {
         return produto;
     }
 
-
-
+    public static VariacaoCreateDTO retornarVariacaoCreateDTO() {
+        VariacaoCreateDTO variacaoCreateDTO = new VariacaoCreateDTO();
+        variacaoCreateDTO.setSku("CAM-BRA-GG-BSC-001");
+        variacaoCreateDTO.setCor("Branco");
+        variacaoCreateDTO.setTamanho("GG");
+        variacaoCreateDTO.setPreco(BigDecimal.valueOf(45.0));
+        variacaoCreateDTO.setTaxaDesconto(0);
+        variacaoCreateDTO.setAtivo("1");
+        variacaoCreateDTO.setIdProduto(1);
+        return variacaoCreateDTO;
+    }
 
 }
