@@ -55,7 +55,7 @@ public interface PessoaControllerInterface {
             @ApiResponse(responseCode = "404", description = "Not Found."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO pessoaDTO) throws RegraDeNegocioException;
+    public ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO pessoaDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar pessoa", description = "Atualizar os dados de uma pessoa no sistema.")
     @ApiResponses(value = {
