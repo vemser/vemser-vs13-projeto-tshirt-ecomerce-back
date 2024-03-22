@@ -22,7 +22,7 @@ public class ItemService {
     private final ObjectMapper objectMapper;
     private final VariacaoService variacaoService;
 
-    public Item getItemById(Integer id) throws RegraDeNegocioException {
+    public Item buscarItemPorId(Integer id) throws RegraDeNegocioException {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Item não encontrado com o ID: " + id));
     }
@@ -40,7 +40,7 @@ public class ItemService {
     public List<Item> criarItens(List<ItemCreateDTO> itensDTO) throws RegraDeNegocioException {
         List<Item> itens = new ArrayList<>();
         for(ItemCreateDTO itemDTO : itensDTO){
-            Item item =criarItem(itemDTO);
+            Item item = criarItem(itemDTO);
             itens.add(item);
         }
        return itemRepository.saveAll(itens);
@@ -77,8 +77,4 @@ public class ItemService {
 
     }
 
-
-    public void deletePorId(Integer idItem) {
-        itemRepository.deleteById(idItem);
-    }
 }

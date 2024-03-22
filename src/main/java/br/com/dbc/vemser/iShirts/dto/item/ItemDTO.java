@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public class ItemDTO {
     private Integer idItem;
     private VariacaoDTO variacao;
     private Integer quantidade;
-    private double subTotal;
+    private BigDecimal subTotal;
 }

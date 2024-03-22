@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,4 +19,5 @@ public class CarrinhoDTO {
     private Integer idCarrinho;
     private Integer idUsuario;
     private List<ItemDTO> itens = new ArrayList<>();
+    private BigDecimal total;
 }

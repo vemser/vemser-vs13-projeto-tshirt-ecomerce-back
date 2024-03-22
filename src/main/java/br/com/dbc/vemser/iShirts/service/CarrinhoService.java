@@ -43,8 +43,8 @@ public class CarrinhoService {
     }
 
     public CarrinhoDTO criarCarrinho(CarrinhoCreateDTO carrinhoCreateDTO) throws RegraDeNegocioException {
-        List<Item> itens = itemService.criarItens(carrinhoCreateDTO.getItens());
         Carrinho carrinho = buscarCarrinhoUsuarioLogado();
+        List<Item> itens = itemService.criarItens(carrinhoCreateDTO.getItens());
         carrinho.setItens(itens);
         calcularTotal(carrinho);
         return converterDTO(carrinhoRepository.save(carrinho));
@@ -75,7 +75,7 @@ public class CarrinhoService {
 
     public CarrinhoDTO removerItemCarrinho(Integer idItem) throws RegraDeNegocioException {
         Carrinho carrinho = buscarCarrinhoUsuarioLogado();
-        Item item = itemService.getItemById(idItem);
+        Item item = itemService.buscarItemPorId(idItem);
 
         carrinho.getItens().remove(item);
         itemService.delete(item);
@@ -89,7 +89,6 @@ public class CarrinhoService {
         List<Item> itens = new ArrayList<>(carrinho.getItens());
         carrinho.getItens().clear();
         for (Item item : itens) {
-            System.out.println(item.getIdItem());
             itemService.delete(item);
         }
 
@@ -110,6 +109,7 @@ public class CarrinhoService {
         Item item = carrinho.getItens().stream()
                 .filter(itemCarr -> itemCarr.getIdItem().equals(idItem))
                 .findFirst().orElseThrow(() -> new RegraDeNegocioException("Item não encontrado no carrinho"));
+
         item.setQuantidade(quantidadeDTO.getQuantidade());
         itemService.calcularSubTotal(item);
         calcularTotal(carrinho);
