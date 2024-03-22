@@ -21,7 +21,6 @@ import java.util.List;
 @Table(name = "VARIACAO")
 public class Variacao {
 
-    //@OneToMany(mappedBy = "idVariacao")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_VARIACAO")
     @SequenceGenerator(name = "SEQ_VARIACAO",sequenceName = "SEQ_VARIACAO", allocationSize = 1)
@@ -33,7 +32,7 @@ public class Variacao {
     @JsonIgnore
     private Produto produto;
 
-    @OneToMany(mappedBy = "variacao")
+    @OneToMany(mappedBy = "variacao", cascade = CascadeType.ALL)
     @Column(name = "ID_FOTO")
     private List<Foto> fotos = new ArrayList<>();
 
