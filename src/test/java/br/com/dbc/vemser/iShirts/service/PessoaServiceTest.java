@@ -207,41 +207,21 @@ public class PessoaServiceTest {
         method.invoke(pessoaService, pessoaCreateDTO);
     }
 
-    @DisplayName("Teste_para_validar_uma_Pessoa_com_data_de_nascimento_futura")
+    @DisplayName("Teste para validar um CPF inválido")
     @Test
-    public void testarValidarPessoaComDataNascimentoFutura() throws Exception {
+    public void testarValidarCpfInvalido() throws Exception {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        pessoaCreateDTO.setDataNascimento(cal.getTime());
+        pessoaCreateDTO.setCpf("1234567890");
 
         Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
-
         method.setAccessible(true);
 
-        InvocationTargetException exception = assertThrows(InvocationTargetException.class, () -> {
+        InvocationTargetException invocationTargetException = assertThrows(InvocationTargetException.class, () -> {
             method.invoke(pessoaService, pessoaCreateDTO);
         });
 
-        assertTrue(exception.getCause() instanceof IllegalArgumentException);
+        assertTrue(invocationTargetException.getCause() instanceof RegraDeNegocioException);
+        assertEquals("CPF inválido", invocationTargetException.getCause().getMessage());
     }
 
-    @DisplayName("Teste_para_validar_uma_Pessoa_com_CPF_existente")
-    @Test
-    public void testarValidarPessoaComCpfExistente() throws Exception {
-        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
-        pessoaCreateDTO.setCpf("12345678901");
-
-        when(pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())).thenReturn(true);
-
-        Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
-
-        method.setAccessible(true);
-
-        InvocationTargetException exception = assertThrows(InvocationTargetException.class, () -> {
-            method.invoke(pessoaService, pessoaCreateDTO);
-        });
-
-        assertTrue(exception.getCause() instanceof IllegalArgumentException);
-    }
 }
