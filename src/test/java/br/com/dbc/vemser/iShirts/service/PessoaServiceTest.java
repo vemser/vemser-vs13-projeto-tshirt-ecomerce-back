@@ -7,8 +7,10 @@ import br.com.dbc.vemser.iShirts.model.Pessoa;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.PessoaRepository;
+import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
 import br.com.dbc.vemser.iShirts.service.mocks.MockPessoa;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,8 +39,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class PessoaServiceTest {
@@ -52,9 +54,12 @@ public class PessoaServiceTest {
     @Mock
     private PessoaRepository pessoaRepository;
 
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
     @BeforeEach
     void setUp() {
-        pessoaService = new PessoaService(pessoaRepository, objectMapper);
+        pessoaService = new PessoaService(pessoaRepository, objectMapper, usuarioRepository);
     }
 
     @DisplayName("Teste para cadastrar uma Pessoa")
@@ -71,7 +76,7 @@ public class PessoaServiceTest {
         assertEquals(pessoa, pessoaCadastrada);
     }
 
-    @DisplayName("Teste_para_atualizar_uma_Pessoa")
+    @DisplayName("Teste para atualizar uma Pessoa")
     @Test
     public void testarAtualizarUmaPessoa() throws RegraDeNegocioException {
         PessoaUpdateDTO pessoaUpdateDTO = MockPessoa.retornarPessoaUpdateDTO();
@@ -88,7 +93,7 @@ public class PessoaServiceTest {
         assertEquals(pessoa, pessoaAtualizada);
     }
 
-    @DisplayName("Teste_para_atualizar_uma_Pessoa_com_excecao")
+    @DisplayName("Teste para atualizar uma Pessoa com excecao")
     @Test
     public void testarAtualizarUmaPessoaComExcecao() {
         PessoaUpdateDTO pessoaUpdateDTO = new PessoaUpdateDTO();
@@ -111,7 +116,7 @@ public class PessoaServiceTest {
         });
     }
 
-    @DisplayName("Teste_para_buscar_todas_as_Pessoas")
+    @DisplayName("Teste  para buscar todas as Pessoas")
     @Test
     public void testarBuscarTodasPessoas() throws RegraDeNegocioException {
         Pageable pageable = PageRequest.of(0,10);
@@ -132,7 +137,7 @@ public class PessoaServiceTest {
         assertEquals(pessoaPage, result);
     }
 
-    @DisplayName("Teste_para_buscar_uma_Pessoa_por_id")
+    @DisplayName("Teste para buscar Uma Pessoa por id")
     @Test
     public void testarBuscarPessoaPorId() throws RegraDeNegocioException {
         Pessoa pessoa = new Pessoa();
@@ -146,7 +151,7 @@ public class PessoaServiceTest {
     }
 
 
-    @DisplayName("Teste_para_inativar_uma_Pessoa")
+    @DisplayName("Teste para inativar uma Pessoa")
     @Test
     public void testarInativarPessoa() throws RegraDeNegocioException {
         Integer idPessoa = 1;
@@ -162,7 +167,7 @@ public class PessoaServiceTest {
         verify(pessoaRepository).save(any(Pessoa.class));
     }
 
-    @DisplayName("Teste_para_ativar_uma_Pessoa")
+    @DisplayName("Teste para ativar uma Pessoa")
     @Test
     public void testarAtivarPessoa() throws RegraDeNegocioException {
         Integer idPessoa = 1;
@@ -179,7 +184,7 @@ public class PessoaServiceTest {
 
     }
 
-    @DisplayName("Teste_para_buscar_uma_Pessoa_por_CPF")
+    @DisplayName("Teste para buscar uma Pessoa por CPF")
     @Test
     public void testarBuscarPessoaPorCpf() throws RegraDeNegocioException {
         String cpf = "12345678901";
@@ -193,12 +198,13 @@ public class PessoaServiceTest {
         assertEquals(pessoa, result);
     }
 
+    @DisplayName("Teste para validar uma Pessoa")
     @Test
     public void testValidarPessoa() throws Exception {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
         pessoaCreateDTO.setCpf("12345678901");
 
-        PessoaService pessoaService = new PessoaService(pessoaRepository, objectMapper);
+        PessoaService pessoaService = new PessoaService(pessoaRepository, objectMapper, usuarioRepository);
 
         Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
 
@@ -222,6 +228,64 @@ public class PessoaServiceTest {
 
         assertTrue(invocationTargetException.getCause() instanceof RegraDeNegocioException);
         assertEquals("CPF inválido", invocationTargetException.getCause().getMessage());
+    }
+
+    @DisplayName("Teste para validar uma data de nascimento futura")
+    @Test
+    public void testarValidarDataNascimentoFutura() throws Exception {
+        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        pessoaCreateDTO.setDataNascimento(cal.getTime());
+
+        Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
+        method.setAccessible(true);
+
+        InvocationTargetException invocationTargetException = assertThrows(InvocationTargetException.class, () -> {
+            method.invoke(pessoaService, pessoaCreateDTO);
+        });
+
+        assertTrue(invocationTargetException.getCause() instanceof RegraDeNegocioException);
+        assertEquals("A data de nascimento não pode estar no futuro", invocationTargetException.getCause().getMessage());
+    }
+
+    @DisplayName("Teste para validar um CPF existente")
+    @Test
+    public void testarValidarCpfExistente() throws Exception {
+        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
+        pessoaCreateDTO.setCpf("12345678901");
+
+        when(pessoaRepository.existsByCpf(pessoaCreateDTO.getCpf())).thenReturn(true);
+
+        Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
+        method.setAccessible(true);
+
+        InvocationTargetException invocationTargetException = assertThrows(InvocationTargetException.class, () -> {
+            method.invoke(pessoaService, pessoaCreateDTO);
+        });
+
+        assertTrue(invocationTargetException.getCause() instanceof RegraDeNegocioException);
+        assertEquals("CPF já existente", invocationTargetException.getCause().getMessage());
+    }
+
+    @DisplayName("Teste para deletar uma Pessoa")
+    @Test
+    public void testDeletarPessoa() throws RegraDeNegocioException {
+        Integer idPessoa = 1;
+        Pessoa pessoa = new Pessoa();
+        Usuario usuario = new Usuario();
+        pessoa.setUsuario(usuario);
+        usuario.setIdUsuario(1);
+
+        when(pessoaRepository.findById(idPessoa)).thenReturn(Optional.of(pessoa));
+        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+
+        pessoaService.deletarPessoa(idPessoa);
+
+        verify(pessoaRepository, times(1)).findById(idPessoa);
+        verify(usuarioRepository, times(1)).findById(usuario.getIdUsuario());
+        verify(usuarioRepository, times(1)).save(usuario);
+        verify(pessoaRepository, times(1)).delete(pessoa);
     }
 
 }
