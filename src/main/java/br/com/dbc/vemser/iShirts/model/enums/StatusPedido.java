@@ -14,4 +14,3 @@ public enum StatusPedido {
         this.index = index;
     }
 }
-

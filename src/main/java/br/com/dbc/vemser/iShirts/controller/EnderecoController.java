@@ -8,6 +8,7 @@ import br.com.dbc.vemser.iShirts.service.EnderecoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,7 @@ public class EnderecoController implements EnderecoControllerInterface {
     }
 
     public ResponseEntity<EnderecoDTO> salvarEndereco(  EnderecoCreateDTO dto) throws RegraDeNegocioException {
-        return ResponseEntity.ok().body(this.enderecoService.salvarEndereco(dto));
+        return new ResponseEntity<>(this.enderecoService.salvarEndereco(dto), HttpStatus.CREATED);
     }
 
     public ResponseEntity<EnderecoDTO> editarEndereco(  EnderecoCreateDTO dto, Integer idEndereco) throws RegraDeNegocioException {

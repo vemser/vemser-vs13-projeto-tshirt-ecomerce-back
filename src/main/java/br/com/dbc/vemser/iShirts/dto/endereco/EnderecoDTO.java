@@ -1,13 +1,18 @@
 package br.com.dbc.vemser.iShirts.dto.endereco;
 
 import br.com.dbc.vemser.iShirts.model.Pessoa;
-import lombok.Data;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
-@Data
+
 @Validated
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class EnderecoDTO {
     private Integer idEndereco;
@@ -23,6 +28,7 @@ public class EnderecoDTO {
 
     private String referencia;
 
+    private String cidade;
 
     private String bairro;
 
@@ -35,9 +41,9 @@ public class EnderecoDTO {
     private String pais;
 
 
-    private Date criadoEm;
+    private Timestamp criadoEm;
 
 
-    private Date editadoEm;
+    private Timestamp editadoEm;
 
 }

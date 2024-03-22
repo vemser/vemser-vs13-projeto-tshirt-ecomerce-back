@@ -52,4 +52,16 @@ public class VariacaoController implements VariacaoControllerInterface {
         return new ResponseEntity<>("Variação deletada com sucesso", HttpStatus.OK);
     }
 
+    @DeleteMapping("/desativar/{idProduto}")
+    public ResponseEntity<String> desativarVariacao(@PathVariable("idProduto") Integer idProduto) throws RegraDeNegocioException {
+        variacaoService.desativarVariacao(idProduto);
+        return ResponseEntity.ok("Variação desativada com sucesso");
+    }
+
+    @DeleteMapping("/ativar/{idProduto}")
+    public ResponseEntity<String> ativarVariacao(@PathVariable("idProduto") Integer idProduto) throws RegraDeNegocioException {
+        variacaoService.ativarVariacao(idProduto);
+        return ResponseEntity.ok("Variação ativada com sucesso");
+    }
+
 }

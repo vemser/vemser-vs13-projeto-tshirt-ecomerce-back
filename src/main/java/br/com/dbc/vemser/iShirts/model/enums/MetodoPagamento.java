@@ -9,9 +9,9 @@ public enum MetodoPagamento {
     DINHEIRO(2);
 
     private final int index;
+
     MetodoPagamento(int index) {
         this.index = index;
     }
+
 }
-
-

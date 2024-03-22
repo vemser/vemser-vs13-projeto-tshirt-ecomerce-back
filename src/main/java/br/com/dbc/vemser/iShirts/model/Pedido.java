@@ -5,9 +5,10 @@ import br.com.dbc.vemser.iShirts.model.enums.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+
 import javax.persistence.*;
 import java.util.Date;
-
+import java.util.List;
 
 @Data
 @Entity(name = "PEDIDO")
@@ -16,7 +17,7 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PEDIDO")
     @SequenceGenerator(name = "SEQ_PEDIDO", sequenceName = "SEQ_PEDIDO", allocationSize = 1)
     @Column(name = "ID_PEDIDO")
-    private Integer idpedido;
+    private Integer idPedido;
 
     @Column(name = "METODO_PAGAMENTO")
     private MetodoPagamento metodoPagamento;
@@ -43,5 +44,10 @@ public class Pedido {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
     private Pessoa pessoa;
+    @ManyToMany
 
+    @JoinTable(name = "ITEM_PEDIDO",
+            joinColumns = @JoinColumn(name = "ID_PEDIDO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_ITEM"))
+    private List<Item> itens;
 }
