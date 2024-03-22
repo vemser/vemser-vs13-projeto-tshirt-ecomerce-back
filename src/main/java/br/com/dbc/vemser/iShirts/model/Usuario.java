@@ -43,6 +43,9 @@ public class Usuario implements UserDetails {
     )
     private Set<Cargo> cargos;
 
+    @OneToOne(mappedBy = "usuario")
+    private Pessoa pessoa;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return cargos;
