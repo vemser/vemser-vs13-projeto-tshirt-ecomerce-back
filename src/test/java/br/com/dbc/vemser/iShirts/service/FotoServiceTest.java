@@ -1,24 +1,21 @@
 package br.com.dbc.vemser.iShirts.service;
 
-//import br.com.dbc.vemser.iShirts.dto.foto.FotoCreateDTO;
+import org.springframework.mock.web.MockMultipartFile;
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
 import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
-//import br.com.dbc.vemser.iShirts.model.Variacao;
+import br.com.dbc.vemser.iShirts.model.Variacao;
 import br.com.dbc.vemser.iShirts.repository.FotoRepository;
-//import br.com.dbc.vemser.iShirts.service.mocks.MockVariacao;
 import br.com.dbc.vemser.iShirts.service.mocks.MockFoto;
+import br.com.dbc.vemser.iShirts.service.mocks.MockVariacao;
 import br.com.dbc.vemser.iShirts.utils.MediaTypeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-//import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,7 +23,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-//@RunWith(MockitoJUnitRunner.class)
 
 @DisplayName("Foto Service - Test")
 class FotoServiceTest {
@@ -47,47 +43,49 @@ class FotoServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-//    @Test
-//    void createFotoVariacao() throws RegraDeNegocioException, IOException {
-//        Variacao variacao = MockVariacao.retornarEntity();
-//        Foto fotoEntity = MockFoto.retornarEntity();
-//        FotoDTO foto = MockFoto.retornarFotoDTOPorEntity(fotoEntity);
-//        MultipartFile arquivo = MockFoto.retornarArquivo();
-//
-//        when(objectMapper.convertValue(any(), eq(FotoDTO.class))).thenReturn(foto);
-//        when(fotoRepository.save(any())).thenReturn(fotoEntity);
-//
-//        FotoDTO fotoResponse = fotoService.criar(variacao.getIdVariacao(), arquivo);
-//
-//        assertNotNull(fotoResponse);
-//        assertEquals(fotoEntity.getIdFoto(), fotoResponse.getIdFoto());
-//        assertEquals(fotoEntity.getArquivo(), fotoResponse.getArquivo());
-//    }
 
-//    @Test
-//    void createFotoVariacaoFailNomeLongo() throws RegraDeNegocioException, IOException {
-//        Variacao variacao = MockVariacao.retornarEntity();
-//        Foto fotoEntity = MockFoto.retornarEntity();
-//        FotoDTO foto = MockFoto.retornarFotoDTOPorEntity(fotoEntity);
-//        MultipartFile arquivo = new MockMultipartFile(
-//                "example.jpg",
-//                "fiDSDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" +
-//                        "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDleddddddddddDDDDDDDDDDDDDDDDDDDdddddd"+
-//                        "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDleddddddddddDDDDDDDDDDDDDDDDDDDdddddd"
-//                ,
-//                "image/jpeg",
-//                new byte[1024]
-//        );
-//
-//        when(variacaoService.findById(variacao.getIdVariacao())).thenReturn(variacao);
-//        when(objectMapper.convertValue(any(), eq(FotoDTO.class))).thenReturn(foto);
-//        when(fotoRepository.save(any())).thenReturn(fotoEntity);
-//
-//        assertThrows(RegraDeNegocioException.class, () -> {
-//            fotoService.criar(variacao.getIdVariacao(), arquivo);
-//        });
-//
-//    }
+    @Test
+    @DisplayName("Deve criar foto com sucesso")
+    void createFotoEdicao() throws RegraDeNegocioException, IOException {
+        Variacao variacao = MockVariacao.retornarEntity();
+        Foto fotoEntity = MockFoto.retornarEntity();
+        FotoDTO foto = MockFoto.retornarFotoDTOPorEntity(fotoEntity);
+        MultipartFile arquivo = MockFoto.retornarArquivo();
+
+        when(mediaTypeUtil.getTipoArquivo(any())).thenReturn("JPEG");
+        when(variacaoService.buscarPorId(variacao.getIdVariacao())).thenReturn(variacao);
+        when(objectMapper.convertValue(any(), eq(FotoDTO.class))).thenReturn(foto);
+        when(fotoRepository.save(any())).thenReturn(fotoEntity);
+
+        FotoDTO fotoResponse = fotoService.criar(arquivo, variacao.getIdVariacao());
+
+        assertNotNull(fotoResponse);
+        assertEquals(fotoEntity.getIdFoto(), fotoResponse.getIdFoto());
+        assertEquals(fotoEntity.getArquivo(), fotoResponse.getArquivo());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao criar foto com nome do arquivo muito grande")
+    void createFotoNomeMuitoGrande() throws RegraDeNegocioException, IOException {
+        Variacao variacao = MockVariacao.retornarEntity();
+        MultipartFile arquivo = new MockMultipartFile(
+                "example.jpg",
+                "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
+                            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
+                            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
+                        ".jpg",
+                "image/jpeg",
+                "conteudo".getBytes()
+        );
+
+        when(mediaTypeUtil.getTipoArquivo(any())).thenReturn("JPEG");
+        when(variacaoService.buscarPorId(variacao.getIdVariacao())).thenReturn(variacao);
+
+        assertThrows(RegraDeNegocioException.class, () -> {
+            fotoService.criar(arquivo, variacao.getIdVariacao());
+        });
+    }
+
 
     @Test
     @DisplayName("Deve atualizar a foto no banco com sucesso")

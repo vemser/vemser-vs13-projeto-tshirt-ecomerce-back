@@ -1,8 +1,6 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.foto.FotoDTO;
-import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoCreateDTO;
-import br.com.dbc.vemser.iShirts.dto.variacao.VariacaoDTO;
 import br.com.dbc.vemser.iShirts.model.Foto;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Variacao;
@@ -15,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class FotoService {
     private final MediaTypeUtil mediaTypeUtil;
     private final ObjectMapper objectMapper;
 
-    public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws Exception {
+    public FotoDTO criar(MultipartFile arquivo, Integer idVariacao) throws RegraDeNegocioException, IOException {
 
        Variacao variacao = variacaoService.buscarPorId(idVariacao);
 
@@ -82,7 +79,7 @@ public class FotoService {
         return fotoEntity;
     }
 
-    private void validarFormato(String formato) throws RegraDeNegocioException {
+    void validarFormato(String formato) throws RegraDeNegocioException {
         String formatoUpper = formato.toUpperCase();
         if (formatoUpper.equals("JPEG") || formatoUpper.equals("JPG") || formatoUpper.equals("WEBP") || formatoUpper.equals("PNG") || formatoUpper.equals("GIF") || formatoUpper.equals("BMP")) {
             return;
