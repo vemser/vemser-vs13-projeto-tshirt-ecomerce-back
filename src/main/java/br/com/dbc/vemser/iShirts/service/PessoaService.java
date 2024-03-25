@@ -107,7 +107,7 @@ public class PessoaService {
     }
 
     public Pessoa buscarPessoaPorUsuario(Usuario usuario){
-        return pessoaRepository.listarPorIdUsuario(usuario);
+        return pessoaRepository.findPessoaByUsuario(usuario);
     }
 
     public void deletarPessoa(Integer idPessoa) throws RegraDeNegocioException {

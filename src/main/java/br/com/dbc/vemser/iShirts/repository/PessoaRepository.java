@@ -14,10 +14,6 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Integer> {
 
     Optional<Pessoa> findByCpf(String cpf);
 
-    @Query(value = """
-            SELECT p FROM Pessoa p
-            WHERE p.usuario = ?1
-            """)
-    Pessoa listarPorIdUsuario(Usuario usuario);
+    Pessoa findPessoaByUsuario(Usuario usuario);
 
 }

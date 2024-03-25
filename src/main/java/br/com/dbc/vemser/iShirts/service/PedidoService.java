@@ -8,6 +8,7 @@ import br.com.dbc.vemser.iShirts.model.*;
 import br.com.dbc.vemser.iShirts.model.enums.StatusPedido;
 import br.com.dbc.vemser.iShirts.repository.PedidoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class PedidoService {
     private PedidoRepository pedidoRepository;
