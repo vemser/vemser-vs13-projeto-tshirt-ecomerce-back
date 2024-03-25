@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -105,6 +104,10 @@ public class PessoaService {
     public Pessoa buscarPessoaPorCpf(String cpf) throws RegraDeNegocioException {
         return pessoaRepository.findByCpf(cpf)
                 .orElseThrow(() -> new RegraDeNegocioException(CPF_INVALIDO));
+    }
+
+    public Pessoa buscarPessoaPorUsuario(Usuario usuario){
+        return pessoaRepository.findPessoaByUsuario(usuario);
     }
 
     public void deletarPessoa(Integer idPessoa) throws RegraDeNegocioException {

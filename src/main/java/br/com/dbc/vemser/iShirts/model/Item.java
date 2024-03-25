@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Item {
     @Column(name = "ID_ITEM")
     private Integer idItem;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_variacao")
     private Variacao variacao;

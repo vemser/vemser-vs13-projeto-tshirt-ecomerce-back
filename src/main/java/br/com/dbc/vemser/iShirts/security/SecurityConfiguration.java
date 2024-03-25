@@ -28,9 +28,9 @@ public class  SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-                        .antMatchers("/","/auth/criar-cliente", "/auth/login").permitAll()
-                        .antMatchers("/cargo/cadastro", "/cargo/{idCargo}", "/cargo").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+//                        .antMatchers("/","/auth/criar-cliente", "/auth/login").permitAll()
+//                        .antMatchers("/cargo/cadastro", "/cargo/{idCargo}", "/cargo").hasRole("ADMIN")
+                        .anyRequest().permitAll()
 
                 );
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
