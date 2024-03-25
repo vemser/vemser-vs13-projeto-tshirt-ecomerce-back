@@ -7,23 +7,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PedidoDTO {
-    private Integer idpedido;
+    private Integer idPedido;
 
     private MetodoPagamento metodoPagamento;
 
     private StatusPedido status;
 
-    private String totalBruto;
+    private BigDecimal totalBruto;
 
-    private String desconto;
+    private BigDecimal desconto;
 
-    private Date totalLiquido;
+    private BigDecimal totalLiquido;
 
     private Pessoa pessoa;
+
+    private Date criado;
+
 }

@@ -136,7 +136,7 @@ public class CarrinhoService {
         List<Item> itens = carrinho.getItens();
 
         for (Item item : itens) {
-            Double subTotal = item.getVariacao().getPreco();
+            double subTotal = item.getVariacao().getPreco() * item.getQuantidade();
             total = total.add(BigDecimal.valueOf(subTotal));
         }
 

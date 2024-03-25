@@ -4,6 +4,8 @@ import br.com.dbc.vemser.iShirts.model.enums.MetodoPagamento;
 import br.com.dbc.vemser.iShirts.model.enums.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import javax.persistence.*;
@@ -36,13 +38,15 @@ public class Pedido {
     private BigDecimal totalLiquido;
 
     @Column(name = "CRIADO", columnDefinition = "TIMESTAMP")
+    @CreationTimestamp
     private Date criado;
 
     @Column(name = "EDITADO", columnDefinition = "TIMESTAMP")
+    @UpdateTimestamp
     private Date editado;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
     private Pessoa pessoa;
 
@@ -52,7 +56,7 @@ public class Pedido {
             inverseJoinColumns = @JoinColumn(name = "ID_ITEM"))
     private List<Item> itens;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_cupom", referencedColumnName = "id_cupom")
     private Cupom cupom;
 }

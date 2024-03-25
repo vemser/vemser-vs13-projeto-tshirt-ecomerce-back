@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class Cupom {
     @Column(name = "VALOR_MINIMO")
     private Double valorMinimo;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cupom")
     private List<Pedido> pedidos;
 }

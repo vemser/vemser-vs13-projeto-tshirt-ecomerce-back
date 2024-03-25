@@ -32,7 +32,7 @@ public class PedidoService {
     }
 
     public List<PedidoDTO> listarPedidosPorIdPessoa(Integer idPessoa) throws RegraDeNegocioException {
-        List<PedidoDTO> pedidos = pedidoRepository.listPedidosPorPessoa(idPessoa).stream()
+        List<PedidoDTO> pedidos = pedidoRepository.listPedidosPorPessoa(getPessoa(idPessoa)).stream()
                 .map(this::retornaPedidoDTO)
                 .collect(Collectors.toList());
 
@@ -59,9 +59,12 @@ public class PedidoService {
         pedido.setMetodoPagamento(pedidoCreateDTO.getMetodoPagamento());
         pedido.setItens(new ArrayList<>(carrinho.getItens()));
         pedido.setTotalLiquido(validarCupom(carrinho.getTotal(), pedidoCreateDTO.getIdCupom()));
-        pedido.setCupom(getCupom(pedidoCreateDTO.getIdCupom()));
-        pedido.setDesconto(pedido.getTotalBruto().subtract(pedido.getTotalLiquido()));
+        Cupom cupom = getCupom(pedidoCreateDTO.getIdCupom());
+        if(cupom != null){
+            pedido.setCupom(cupom);
+        }
         pedido.setTotalBruto(carrinhoService.calcularValorBrutoTotal(carrinho));
+        pedido.setDesconto(pedido.getTotalBruto().subtract(pedido.getTotalLiquido()));
         pedido.setStatus(StatusPedido.EM_ANDAMENTO);
 
         carrinhoService.limparCarrinhoPedidoFeito();
@@ -106,7 +109,7 @@ public class PedidoService {
     }
 
     private Cupom getCupom(Integer idCupom) throws RegraDeNegocioException {
-        if (idCupom == null){
+        if (idCupom == 0){
             return null;
         }
         return cupomService.getCupom(idCupom);
