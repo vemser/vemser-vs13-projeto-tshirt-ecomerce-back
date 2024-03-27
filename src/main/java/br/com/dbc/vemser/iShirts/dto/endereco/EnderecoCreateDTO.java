@@ -3,14 +3,19 @@ package br.com.dbc.vemser.iShirts.dto.endereco;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Validated
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class EnderecoCreateDTO {
 
     @Schema(description = "id da pessoa dona do endereço", example = "1", required = true)
@@ -39,17 +44,21 @@ public class EnderecoCreateDTO {
     @NotNull(message = "por favor preencha o cep corretamente")
     private String cep;
 
-    @Schema(description = "estado do endereço da pessoa", example = "1", required = true)
+    @Schema(description = "cidade do endereço ", example = "Barueri", required = true)
+    @NotNull(message = "por favor preencha a cidade corretamente")
+    private String cidade;
+
+    @Schema(description = "estado do endereço da pessoa", example = "SP", required = true)
     @NotNull(message = "por favor preencha o estado corretamente")
     private String estado;
 
-    @Schema(description = "país do endereço da pessoa", example = "1", required = true)
+    @Schema(description = "país do endereço da pessoa", example = "BR", required = true)
     @NotNull(message = "por favor preencha o pais corretamente")
     private String pais;
 
     @Hidden
-    private Date criadoEm;
+    private Timestamp criadoEm;
 
     @Hidden
-    private Date editadoEm;
+    private Timestamp editadoEm;
 }

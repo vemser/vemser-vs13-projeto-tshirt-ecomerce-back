@@ -29,7 +29,7 @@ public class ProdutoService {
     }
 
     public ProdutoDTO listarPorID(Integer id) throws RegraDeNegocioException {
-        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
+        Produto produto = buscarPorId(id);
         if(produto.getAtivo().equals("0")){
             throw new RegraDeNegocioException(NAO_ENCONTRADO);
         }
@@ -46,7 +46,7 @@ public class ProdutoService {
     }
 
     public ProdutoDTO editarProduto(ProdutoCreateDTO produto, Integer id) throws RegraDeNegocioException {
-        Produto produtoEntity = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
+        Produto produtoEntity = buscarPorId(id);
         produtoEntity.setTitulo(produto.getTitulo());
         produtoEntity.setDescricao(produto.getDescricao());
         produtoEntity.setCategoria(produto.getCategoria());
@@ -57,7 +57,7 @@ public class ProdutoService {
     }
 
     public String deletarProduto(Integer id) throws RegraDeNegocioException {
-        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException(NAO_ENCONTRADO));
+        Produto produto = buscarPorId(id);
         produto.setAtivo("0");
         produtoRepository.save(produto);
 
