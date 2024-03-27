@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Tag(name = "Pedido", description = "Controller responsável pelas operações relacionadas à Pedido.")
 public interface PedidoControllerInterface {
     @Operation(summary = "Listar Pedido por ID", description = "Este endpoint retorna um pedido com base no ID.")
@@ -57,7 +59,7 @@ public interface PedidoControllerInterface {
             }
     )
     @PostMapping
-    public ResponseEntity<PedidoDTO> criarPedido(@RequestBody PedidoCreateDTO pedidoCreateDTO) throws RegraDeNegocioException ;
+    public ResponseEntity<PedidoDTO> criarPedido(@RequestBody @Valid PedidoCreateDTO pedidoCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Editar Pedido", description = "Este endpoint edita um pedido com base no ID.")
     @ApiResponses(
@@ -68,7 +70,7 @@ public interface PedidoControllerInterface {
             }
     )
     @PutMapping("/{idPedido}")
-    public ResponseEntity<PedidoDTO> editarPedido(@PathVariable("idPedido") Integer idPedido, @RequestBody PedidoUpdateDTO pedidoUpdateDTO) throws RegraDeNegocioException;
+    public ResponseEntity<PedidoDTO> editarPedido(@PathVariable("idPedido") Integer idPedido, @RequestBody @Valid PedidoUpdateDTO pedidoUpdateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Excluir Pedido", description = "Este endpoint exclui um pedido com base no ID.")
     @ApiResponses(

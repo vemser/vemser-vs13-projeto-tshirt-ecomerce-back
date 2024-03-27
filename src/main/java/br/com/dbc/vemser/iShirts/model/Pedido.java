@@ -45,7 +45,6 @@ public class Pedido {
     @UpdateTimestamp
     private Date editado;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
     private Pessoa pessoa;

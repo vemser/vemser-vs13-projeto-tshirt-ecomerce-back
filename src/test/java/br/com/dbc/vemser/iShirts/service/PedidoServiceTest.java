@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.iShirts.service;
 
+import br.com.dbc.vemser.iShirts.dto.carrinho.CarrinhoCreateDTO;
+import br.com.dbc.vemser.iShirts.dto.carrinho.CarrinhoDTO;
 import br.com.dbc.vemser.iShirts.dto.pedido.PedidoDTO;
 import br.com.dbc.vemser.iShirts.dto.pedido.PedidoUpdateDTO;
 import br.com.dbc.vemser.iShirts.dto.produto.ProdutoDTO;
@@ -52,28 +54,30 @@ class PedidoServiceTest {
     @Mock
     private ObjectMapper objectMapper;
 
-//    @Test
-//    void criarPedido() throws IOException, RegraDeNegocioException {
-//        Usuario usuario = MockUsuario.retornarEntity();
-//        Carrinho carrinho = MockCarrinho.retornarEntity();
-//        Pedido pedido = MockPedido.retornarEntity();
-//        PedidoDTO pedidoDTO = MockPedido.retornarPedidoDTO();
-//
-//
-//        when(usuarioService.buscarUsuarioLogadoEntity()).thenReturn(usuario);
-//        when(carrinhoService.buscarCarrinhoUsuarioLogado()).thenReturn(carrinho);
-//        when(pedidoRepository.save(any())).thenReturn(pedido);
-//        doNothing().when(carrinhoService).limparCarrinhoPedidoFeito();
-//        when(objectMapper.convertValue(any(), eq(PedidoDTO.class))).thenReturn(pedidoDTO);
-//
-//        PedidoDTO pedidoCriado = pedidoService.criarPedido(MockPedido.retornarPedidoCreateDTO());
-//
-//
-//        verify(usuarioService, times(1)).buscarUsuarioLogadoEntity();
-//        verify(carrinhoService, times(1)).buscarCarrinhoUsuarioLogado();
-//        verify(carrinhoService, times(1)).limparCarrinhoPedidoFeito();
-//        assertEquals(pedidoCriado, pedidoDTO);
-//    }
+    @Test
+    void criarPedido() throws IOException, RegraDeNegocioException {
+        Usuario usuario = MockUsuario.retornarEntity();
+        Carrinho carrinho = MockCarrinho.retornarEntity();
+        CarrinhoDTO carrinhoDTO = MockCarrinho.retornarCarrinhoDTO(carrinho);
+        Pedido pedido = MockPedido.retornarEntity();
+        PedidoDTO pedidoDTO = MockPedido.retornarPedidoDTO();
+
+
+        when(usuarioService.buscarUsuarioLogadoEntity()).thenReturn(usuario);
+//        when(carrinhoService.criarCarrinho(any())).thenReturn(carrinhoDTO);
+        when(carrinhoService.buscarCarrinhoUsuarioLogado()).thenReturn(carrinho);
+        when(pedidoRepository.save(any())).thenReturn(pedido);
+        doNothing().when(carrinhoService).limparCarrinhoPedidoFeito();
+        when(objectMapper.convertValue(any(), eq(PedidoDTO.class))).thenReturn(pedidoDTO);
+
+        PedidoDTO pedidoCriado = pedidoService.criarPedido(MockPedido.retornarPedidoCreateDTO());
+
+
+        verify(usuarioService, times(1)).buscarUsuarioLogadoEntity();
+        verify(carrinhoService, times(1)).buscarCarrinhoUsuarioLogado();
+        verify(carrinhoService, times(1)).limparCarrinhoPedidoFeito();
+        assertEquals(pedidoCriado, pedidoDTO);
+    }
 
     @Test
     void editarPedido() throws IOException, RegraDeNegocioException {

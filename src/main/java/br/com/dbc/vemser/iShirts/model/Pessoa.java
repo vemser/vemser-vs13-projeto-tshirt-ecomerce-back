@@ -24,6 +24,7 @@ public class Pessoa {
     @Column(name = "ID_PESSOA")
     private Integer idPessoa;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO", nullable = false)
     private Usuario usuario;
@@ -66,6 +67,7 @@ public class Pessoa {
         this.usuario.setIdUsuario(idUsuario);
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pessoa", cascade = CascadeType.ALL)
     private Set<Pedido> pedidos;
 
