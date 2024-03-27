@@ -119,6 +119,18 @@ class CarrinhoServiceTest {
     }
 
     @Test
+    void calculoBrutoTotal() throws IOException, RegraDeNegocioException {
+        Carrinho carrinho = MockCarrinho.retornarEntity();
+
+        BigDecimal total = carrinhoService.calcularValorBrutoTotal(carrinho);
+
+        assertNotNull(total);
+        assertEquals(total, BigDecimal.valueOf(1000.0));
+
+
+    }
+
+    @Test
     void deleteCarrinho() throws IOException, RegraDeNegocioException {
         Carrinho carrinho = MockCarrinho.retornarEntity();
 

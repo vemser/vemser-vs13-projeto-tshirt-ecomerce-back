@@ -56,6 +56,7 @@ public class ItemService {
         List<ItemDTO> itensDTO = new ArrayList<>();
         for(Item item : itens){
             ItemDTO itemDTO = objectMapper.convertValue(item, ItemDTO.class);
+            itemDTO.setVariacao(objectMapper.convertValue(item.getVariacao(), VariacaoDTO.class));
             itensDTO.add(itemDTO);
         }
         return itensDTO;
