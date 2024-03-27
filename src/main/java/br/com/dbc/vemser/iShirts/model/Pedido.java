@@ -4,9 +4,12 @@ import br.com.dbc.vemser.iShirts.model.enums.MetodoPagamento;
 import br.com.dbc.vemser.iShirts.model.enums.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,28 +29,34 @@ public class Pedido {
     private StatusPedido status;
 
     @Column(name = "TOTAL_BRUTO")
-    private String totalBruto;
+    private BigDecimal totalBruto;
 
     @Column(name = "DESCONTO")
-    private String desconto;
+    private BigDecimal desconto;
 
     @Column(name = "TOTAL_LIQUIDO")
-    private Date totalLiquido;
+    private BigDecimal totalLiquido;
 
     @Column(name = "CRIADO", columnDefinition = "TIMESTAMP")
+    @CreationTimestamp
     private Date criado;
 
     @Column(name = "EDITADO", columnDefinition = "TIMESTAMP")
+    @UpdateTimestamp
     private Date editado;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_pessoa", referencedColumnName = "id_pessoa")
     private Pessoa pessoa;
-    @ManyToMany
 
+    @ManyToMany
     @JoinTable(name = "ITEM_PEDIDO",
             joinColumns = @JoinColumn(name = "ID_PEDIDO"),
             inverseJoinColumns = @JoinColumn(name = "ID_ITEM"))
     private List<Item> itens;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cupom", referencedColumnName = "id_cupom")
+    private Cupom cupom;
 }
