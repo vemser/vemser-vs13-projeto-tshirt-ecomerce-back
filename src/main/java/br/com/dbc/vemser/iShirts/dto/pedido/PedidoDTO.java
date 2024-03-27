@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.iShirts.dto.pedido;
 
+import br.com.dbc.vemser.iShirts.model.Item;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.model.enums.MetodoPagamento;
 import br.com.dbc.vemser.iShirts.model.enums.StatusPedido;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,6 +30,11 @@ public class PedidoDTO {
 
     private Pessoa pessoa;
 
+    private List<Item> itens;
+
+
     private Date criado;
+
+
 
 }

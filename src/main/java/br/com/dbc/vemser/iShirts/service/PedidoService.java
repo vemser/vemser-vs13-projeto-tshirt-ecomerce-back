@@ -10,6 +10,9 @@ import br.com.dbc.vemser.iShirts.repository.PedidoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
+
 public class PedidoService {
     private PedidoRepository pedidoRepository;
     private PessoaService pessoaService;
@@ -31,21 +35,15 @@ public class PedidoService {
         return retornaPedidoDTO(getPedido(idPedido));
     }
 
-    public List<PedidoDTO> listarPedidosPorIdPessoa(Integer idPessoa) throws RegraDeNegocioException {
-        List<PedidoDTO> pedidos = pedidoRepository.listPedidosPorPessoa(getPessoa(idPessoa)).stream()
-                .map(this::retornaPedidoDTO)
-                .collect(Collectors.toList());
+    public Page<PedidoDTO> listarPedidosPorIdPessoa(Integer idPessoa, Pageable page) throws RegraDeNegocioException {
+        Page<Pedido> pagePedidos = pedidoRepository.listPedidosPorPessoa(getPessoa(idPessoa), page);
 
-        pedidos.stream()
-                .findFirst()
-                .orElseThrow(()-> new RegraDeNegocioException("Essa pessoa não possui nenhum pedido!"));
-        return pedidos;
+        return pagePedidos.map(this::retornaPedidoDTO);
     }
 
-    public List<PedidoDTO> listarPedidos(){
-        return pedidoRepository.findAll().stream()
-                .map(this::retornaPedidoDTO)
-                .collect(Collectors.toList());
+    public Page<PedidoDTO> listarPedidos(Pageable page){
+       Page<Pedido> pagePedidos = pedidoRepository.findAllBy(page);
+       return pagePedidos.map(this::retornaPedidoDTO);
     }
 
     public PedidoDTO criarPedido(PedidoCreateDTO pedidoCreateDTO) throws RegraDeNegocioException {
@@ -54,22 +52,12 @@ public class PedidoService {
         carrinhoService.atualizarCarrinho();
         Carrinho carrinho = carrinhoService.buscarCarrinhoUsuarioLogado();
 
-        Pedido pedido = new Pedido();
-        pedido.setPessoa(pessoaService.buscarPessoaPorUsuario(usuario));
-        pedido.setMetodoPagamento(pedidoCreateDTO.getMetodoPagamento());
-        pedido.setItens(new ArrayList<>(carrinho.getItens()));
-        pedido.setTotalLiquido(validarCupom(carrinho.getTotal(), pedidoCreateDTO.getIdCupom()));
-        Cupom cupom = getCupom(pedidoCreateDTO.getIdCupom());
-        if(cupom != null){
-            pedido.setCupom(cupom);
-        }
-        pedido.setTotalBruto(carrinhoService.calcularValorBrutoTotal(carrinho));
-        pedido.setDesconto(pedido.getTotalBruto().subtract(pedido.getTotalLiquido()));
-        pedido.setStatus(StatusPedido.EM_ANDAMENTO);
+        Pedido pedido = montarPedido(usuario, pedidoCreateDTO, carrinho);
 
+        pedidoRepository.save(pedido);
         carrinhoService.limparCarrinhoPedidoFeito();
 
-        return retornaPedidoDTO(pedidoRepository.save(pedido));
+        return retornaPedidoDTO(pedido);
     }
 
     public PedidoDTO editarPedido(Integer idPedido, PedidoUpdateDTO pedidoUpdateDTO) throws RegraDeNegocioException {
@@ -99,6 +87,22 @@ public class PedidoService {
         return valorCarrinho.subtract(BigDecimal.valueOf(cupom.getValorMinimo()));
     }
 
+    private Pedido montarPedido(Usuario usuario, PedidoCreateDTO pedidoCreateDTO, Carrinho carrinho) throws RegraDeNegocioException {
+        Pedido pedido = new Pedido();
+        pedido.setPessoa(pessoaService.buscarPessoaPorUsuario(usuario));
+        pedido.setMetodoPagamento(pedidoCreateDTO.getMetodoPagamento());
+        pedido.setItens(new ArrayList<>(carrinho.getItens()));
+        pedido.setTotalLiquido(validarCupom(carrinho.getTotal(), pedidoCreateDTO.getIdCupom()));
+        Cupom cupom = getCupom(pedidoCreateDTO.getIdCupom());
+        if (cupom != null) {
+            pedido.setCupom(cupom);
+        }
+        pedido.setTotalBruto(carrinhoService.calcularValorBrutoTotal(carrinho));
+        pedido.setDesconto(pedido.getTotalBruto().subtract(pedido.getTotalLiquido()));
+        pedido.setStatus(StatusPedido.EM_ANDAMENTO);
+        return pedido;
+    }
+
     private Pessoa getPessoa(Integer idPessoa) throws RegraDeNegocioException {
         return pessoaService.buscarPessoaPorId(idPessoa);
     }
@@ -117,13 +121,5 @@ public class PedidoService {
 
     private PedidoDTO retornaPedidoDTO(Pedido pedido){
         return objectMapper.convertValue(pedido, PedidoDTO.class);
-    }
-
-    private Pedido convertPedidoUpdateDTO(PedidoUpdateDTO pedidoUpdateDTO){
-        return objectMapper.convertValue(pedidoUpdateDTO, Pedido.class);
-    }
-
-    private Pedido convertPedidoCreateDTO(PedidoCreateDTO pedidoCreateDTO){
-        return objectMapper.convertValue(pedidoCreateDTO, Pedido.class);
     }
 }

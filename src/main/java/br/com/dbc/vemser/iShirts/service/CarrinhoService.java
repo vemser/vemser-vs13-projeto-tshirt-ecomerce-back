@@ -11,6 +11,7 @@ import br.com.dbc.vemser.iShirts.model.Item;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.repository.CarrinhoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CarrinhoService {
 
     private final CarrinhoRepository carrinhoRepository;
@@ -134,11 +136,15 @@ public class CarrinhoService {
     public BigDecimal calcularValorBrutoTotal(Carrinho carrinho) {
         BigDecimal total = BigDecimal.ZERO;
         List<Item> itens = carrinho.getItens();
+        log.info(total.toString());
 
         for (Item item : itens) {
-            double subTotal = item.getVariacao().getPreco() * item.getQuantidade();
-            total = total.add(BigDecimal.valueOf(subTotal));
+            BigDecimal precoItem = BigDecimal.valueOf(item.getVariacao().getPreco());
+            BigDecimal quantidade = BigDecimal.valueOf(item.getQuantidade());
+            BigDecimal subTotal = precoItem.multiply(quantidade);
+            total = total.add(subTotal);
         }
+        log.info(total.toString());
 
         return total;
     }
