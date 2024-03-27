@@ -84,8 +84,8 @@ public class EnderecoService {
     }
 
     public void deletar(Integer idEndereco) throws RegraDeNegocioException {
-        Endereco endereco = buscarPorId(idEndereco);
-        this.enderecoRepository.delete(endereco);
+        buscarPorId(idEndereco);
+        this.enderecoRepository.deleteById(idEndereco);
     }
 
 
