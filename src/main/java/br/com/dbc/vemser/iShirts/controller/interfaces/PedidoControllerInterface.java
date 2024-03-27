@@ -7,30 +7,30 @@ import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Pedido", description = "Controller responsável pelas operações relacionadas à Pedido.")
 public interface PedidoControllerInterface {
-    @Operation(summary = "Listar Pedido por ID", description = "Este endpoint retorna um pedido com base no ID fornecido.")
+    @Operation(summary = "Listar Pedido por ID", description = "Este endpoint retorna um pedido com base no ID.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna o pedido"),
-                    @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
+                    @ApiResponse(responseCode = "400", description = "Erro na inserção de dados ou Pedido não encontrado."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
             }
     )
     @GetMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> listarPedidoPorId(@PathVariable("idPedido") Integer idPedido) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar Pedidos por ID de Pessoa", description = "Este endpoint retorna todos os pedidos associados a um determinado ID de pessoa.")
+    @Operation(summary = "Listar Pedidos por ID de Pessoa", description = "Este endpoint retorna todos os pedidos com base no ID pessoa")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna a lista de pedidos"),
-                    @ApiResponse(responseCode = "400", description = "Erro na inserção de dados"),
+                    @ApiResponse(responseCode = "400", description = "Erro na inserção de dados ou pessoa não possui nenhum pedido."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "404", description = "Nenhum pedido encontrado para o ID de pessoa fornecido")
             }
     )
     @GetMapping("/{idPessoa}/pessoa")
@@ -59,28 +59,26 @@ public interface PedidoControllerInterface {
     @PostMapping
     public ResponseEntity<PedidoDTO> criarPedido(@RequestBody PedidoCreateDTO pedidoCreateDTO) throws RegraDeNegocioException ;
 
-    @Operation(summary = "Editar Pedido", description = "Este endpoint edita um pedido existente com base no ID fornecido.")
+    @Operation(summary = "Editar Pedido", description = "Este endpoint edita um pedido com base no ID.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Pedido editado com sucesso"),
                     @ApiResponse(responseCode = "400", description = "Erro na inserção de dados"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
             }
     )
     @PutMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> editarPedido(@PathVariable("idPedido") Integer idPedido, @RequestBody PedidoUpdateDTO pedidoUpdateDTO) throws RegraDeNegocioException;
 
-    @Operation(summary = "Excluir Pedido", description = "Este endpoint exclui um pedido com base no ID fornecido.")
+    @Operation(summary = "Excluir Pedido", description = "Este endpoint exclui um pedido com base no ID.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Pedido excluído com sucesso"),
-                    @ApiResponse(responseCode = "400", description = "Erro na inserção de dados"),
+                    @ApiResponse(responseCode = "400", description = "Erro na inserção de dados ou Pedido não encontrado."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
             }
     )
     @DeleteMapping("/{idPedido}")
-    public ResponseEntity<Void> editarPedido(@PathVariable("idPedido") Integer idPedido) throws RegraDeNegocioException;
+    public ResponseEntity<Void> excluirPedido(@PathVariable("idPedido") Integer idPedido) throws RegraDeNegocioException;
 
 }

@@ -58,7 +58,7 @@ public class PedidoController implements PedidoControllerInterface {
     }
 
     @DeleteMapping("/{idPedido}")
-    public ResponseEntity<Void> editarPedido(@PathVariable("idPedido") Integer idPedido) throws RegraDeNegocioException {
+    public ResponseEntity<Void> excluirPedido(@PathVariable("idPedido") Integer idPedido) throws RegraDeNegocioException {
         pedidoService.deletarPedido(idPedido);
         return ResponseEntity.ok().build();
     }

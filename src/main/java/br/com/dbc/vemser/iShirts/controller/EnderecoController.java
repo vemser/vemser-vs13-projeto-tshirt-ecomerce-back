@@ -23,8 +23,6 @@ public class EnderecoController implements EnderecoControllerInterface {
 
     private final EnderecoService enderecoService;
 
-
-
    public ResponseEntity<Page<EnderecoDTO>> listarTodos( Integer tamanhoPagina,  Integer paginaSolicitada ){
     return ResponseEntity.ok(this.enderecoService.listarTodos(tamanhoPagina,paginaSolicitada));
    }
