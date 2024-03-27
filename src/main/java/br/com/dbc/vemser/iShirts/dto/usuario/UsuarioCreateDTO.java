@@ -28,6 +28,8 @@ public class UsuarioCreateDTO {
     @Pattern(regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).*$", message = "A senha deve conter pelo menos 1 caractere especial")
     private String senha;
 
+    @Schema(description = "Conjunto de cargos do Usuário", required = true,
+            example = "[{\"idCargo\": 1, \"descricao\": \"ROLE_CLIENTE\"}]")
     private Set<Cargo> cargos;
 
 }

@@ -4,6 +4,7 @@ import br.com.dbc.vemser.iShirts.dto.produto.ProdutoCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.produto.ProdutoDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public interface ProdutoControllerInterface {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
     @GetMapping("/todos-produtos")
-    public ResponseEntity<Page<ProdutoDTO>> listarProdutos(@PageableDefault(value = 5, page = 0, sort = "criado") Pageable page);
+    public ResponseEntity<Page<ProdutoDTO>> listarProdutos(@Parameter(hidden = true, required = true) @PageableDefault(value = 5, page = 0, sort = "criado") Pageable page);
 
 
 

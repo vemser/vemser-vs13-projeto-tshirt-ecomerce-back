@@ -1,12 +1,10 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
+import br.com.dbc.vemser.iShirts.dto.usuario.*;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Cargo;
+import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +31,7 @@ public class UsuarioService {
 
     private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     private static final String MSG_USUARIO_NAO_ENCONTRADO_INATIVO = "Usuário não encontrado ou já está inativo";
+    private static final String MSG_NENHUM_USUARIO_ENCONTRADO = "Nenhum Usuário encontrado";
     private static final String MSG_EMAIL_SENHA_OBRIGATORIOS = "E-mail e senha são obrigatórios";
     private static final String MSG_EMAIL_INVALIDO = "E-mail Inválido";
 
@@ -39,23 +39,23 @@ public class UsuarioService {
 
     public List<UsuarioDTO> listarUsuariosInativos() throws RegraDeNegocioException {
         List<Usuario> usuariosInativos = usuarioRepository.findByAtivo(Ativo.INATIVO);
-        verificarListaUsuariosVazia(usuariosInativos, MSG_USUARIO_NAO_ENCONTRADO_INATIVO);
+        verificarListaUsuariosVazia(usuariosInativos);
         return usuariosInativos.stream()
                 .map(this::converterParaUsuarioDTOComId)
                 .collect(Collectors.toList());
     }
 
-    public List<UsuarioDTO> listarUsuarios() throws RegraDeNegocioException {
-        List<Usuario> usuarios = usuarioRepository.findAllByAtivo(Ativo.ATIVO);
-        verificarListaUsuariosVazia(usuarios, MSG_USUARIO_NAO_ENCONTRADO);
+    public List<UsuarioDTO> listarUsuariosAtivos() throws RegraDeNegocioException {
+        List<Usuario> usuarios = usuarioRepository.findByAtivo(Ativo.ATIVO);
+        verificarListaUsuariosVazia(usuarios);
         return usuarios.stream()
                 .map(this::converterParaUsuarioDTOComId)
                 .collect(Collectors.toList());
     }
 
-    private void verificarListaUsuariosVazia(List<Usuario> usuarios, String mensagemErro) throws RegraDeNegocioException {
+    private void verificarListaUsuariosVazia(List<Usuario> usuarios) throws RegraDeNegocioException {
         if (usuarios.isEmpty()) {
-            throw new RegraDeNegocioException(mensagemErro);
+            throw new RegraDeNegocioException(UsuarioService.MSG_NENHUM_USUARIO_ENCONTRADO);
         }
     }
 
@@ -72,7 +72,6 @@ public class UsuarioService {
         if (usuarioRepository.existsByEmailAndAtivo(usuarioAtualizado.getEmail(), Ativo.ATIVO)) {
             throw new RegraDeNegocioException(MSG_EMAIL_INVALIDO);
         }
-
 
         usuarioAtualizadoEntidade = updateParaUsuario(usuarioAtualizado, usuarioAtualizadoEntidade);
         usuarioAtualizadoEntidade.setAtivo(Ativo.ATIVO);
@@ -93,24 +92,38 @@ public class UsuarioService {
         verificarExistenciaEmail(usuario.getEmail());
 
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
-        Cargo cargo = cargoService.buscarCargoPorId(usuario.getCargos().iterator().next().getIdCargo());
+
+        Set<Cargo> cargos = usuario.getCargos();
+        if (cargos == null || cargos.isEmpty()) {
+            throw new RegraDeNegocioException("Nenhum cargo especificado para o novo usuário");
+        }
+
+        for (Cargo cargo : cargos) {
+            Integer cargoId = cargo.getIdCargo();
+            if (cargoId == null) {
+                throw new RegraDeNegocioException("ID do cargo não especificado");
+            }
+
+            Cargo cargoExistente = cargoService.buscarCargoPorId(cargoId);
+            if (cargoExistente == null) {
+                throw new RegraDeNegocioException("Cargo com ID " + cargoId + " não encontrado");
+            }
+        }
 
         Usuario novoUsuario = createParaUsuario(usuario);
         novoUsuario.setAtivo(Ativo.ATIVO);
         novoUsuario.setSenha(senhaCriptografada);
-        novoUsuario.setCargos(new HashSet<>());
-        novoUsuario.getCargos().add(cargo);
+        novoUsuario.setCargos(new HashSet<>(cargos));
 
         usuarioRepository.save(novoUsuario);
         return converterParaUsuarioDTOComId(novoUsuario);
     }
-
     public UsuarioDTO criarCliente(ClienteCreateDTO usuario) throws RegraDeNegocioException {
         validarDadosClienteCreate(usuario);
         verificarExistenciaEmail(usuario.getEmail());
 
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
-        Cargo cargoCliente = cargoService.buscarCargoPorDescricao("Cliente");
+        Cargo cargoCliente = cargoService.buscarCargoPorDescricao("ROLE_CLIENTE");
 
         Usuario novoUsuario = createParaCliente(usuario);
         novoUsuario.setAtivo(Ativo.ATIVO);
@@ -138,12 +151,14 @@ public class UsuarioService {
         }
     }
 
-    public void deletarUsuario(Integer id) throws RegraDeNegocioException {
+    public void inativarUsuario(Integer id) throws RegraDeNegocioException {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             if (usuario.getAtivo() != Ativo.INATIVO) {
                 usuario.setAtivo(Ativo.INATIVO);
+                Pessoa pessoa = usuario.getPessoa();
+                pessoa.setAtivo(String.valueOf(Ativo.INATIVO.getIndex()));
                 usuarioRepository.save(usuario);
             } else {
                 throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO_INATIVO);
@@ -151,18 +166,6 @@ public class UsuarioService {
         } else {
             throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO);
         }
-    }
-
-    public Optional<Usuario> buscarUsuarioPorEmail(String email) {
-        return usuarioRepository.findByEmail(email);
-    }
-
-    public Integer buscarIdUsuarioLogado() {
-        return Integer.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-    }
-
-    public String buscarUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     public UsuarioDTO alterarSenha(AlteraSenhaDTO alteraSenhaDTO) throws Exception {
@@ -199,11 +202,32 @@ public class UsuarioService {
         return objectMapper.convertValue(entity, Usuario.class);
     }
 
-    public Usuario buscarUsuarioId(Integer id) throws RegraDeNegocioException {
-        return usuarioRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado com o ID: " + id));
-    }
     public Usuario buscarUsuarioLogadoEntity() throws RegraDeNegocioException {
         Integer id = buscarIdUsuarioLogado();
         return usuarioRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado com o ID: " + id));
+    }
+
+    public Optional<Usuario> buscarUsuarioPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+    public Integer buscarIdUsuarioLogado() {
+        return Integer.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    public Usuario buscarUsuarioPorIdWithCargo(Integer id) throws RegraDeNegocioException {
+        return usuarioRepository.findByIdWithCargos(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado com o ID: " + id));
+    }
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+    }
+
+    public UsuarioLoginDTO getUsuarioLogado(Integer id) throws RegraDeNegocioException {
+        Usuario usuario = buscarUsuarioPorIdWithCargo(id);
+        UsuarioLoginDTO usuarioLoginDTO = objectMapper.convertValue(usuario, UsuarioLoginDTO.class);
+        usuarioLoginDTO.setCargos(usuario.getCargos());
+        return usuarioLoginDTO;
     }
 }

@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.iShirts.dto.usuario;
 
+import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaCreateDTO;
+import br.com.dbc.vemser.iShirts.model.Pessoa;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,11 +20,4 @@ public class UsuarioUpdateDTO {
     @NotBlank
     @Schema(description = "E-mail do Usuário", required = true, example = "cliente@dbccompany.com.br")
     private String email;
-
-    @NotBlank
-    @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres")
-    @Size(max = 60, message = "A senha deve ter no máximo 60 caracteres")
-    @Schema(description = "Senha do Usuário", required = true, example = "Senha123@")
-    @Pattern(regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).*$", message = "A senha deve conter pelo menos 1 caractere especial")
-    private String senha;
 }

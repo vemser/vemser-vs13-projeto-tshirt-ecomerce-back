@@ -57,9 +57,12 @@ public class PessoaServiceTest {
     @Mock
     private UsuarioRepository usuarioRepository;
 
+    @Mock
+    private UsuarioService usuarioService;
+
     @BeforeEach
     void setUp() {
-        pessoaService = new PessoaService(pessoaRepository, objectMapper, usuarioRepository);
+        pessoaService = new PessoaService(pessoaRepository, objectMapper, usuarioRepository, usuarioService);
     }
 
     @DisplayName("Teste para cadastrar uma Pessoa")
@@ -204,7 +207,7 @@ public class PessoaServiceTest {
         PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
         pessoaCreateDTO.setCpf("12345678901");
 
-        PessoaService pessoaService = new PessoaService(pessoaRepository, objectMapper, usuarioRepository);
+        PessoaService pessoaService = new PessoaService(pessoaRepository, objectMapper, usuarioRepository, usuarioService);
 
         Method method = PessoaService.class.getDeclaredMethod("validarPessoa", PessoaCreateDTO.class);
 

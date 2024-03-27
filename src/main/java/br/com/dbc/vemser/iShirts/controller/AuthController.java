@@ -27,7 +27,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/auth")
 @Validated
-@Tag(name = "Autenticação", description = "Endpoint de Autenticação")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController implements AuthControllerInterface {
@@ -56,24 +55,14 @@ public class AuthController implements AuthControllerInterface {
 
     }
 
-    @PostMapping("/criar-usuario")
-    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
-        UsuarioDTO novoUsuario = usuarioService.criarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
-    }
     @PostMapping("/criar-cliente")
     public ResponseEntity<UsuarioDTO> criarCliente(@Valid @RequestBody ClienteCreateDTO usuario) throws RegraDeNegocioException {
         UsuarioDTO novoUsuario = usuarioService.criarCliente(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
-    @PutMapping("/alterar-senha")
-    public ResponseEntity<UsuarioDTO> alterarSenha(@RequestBody @Valid AlteraSenhaDTO alteraSenhaDTO) throws Exception {
-        return ResponseEntity.ok(usuarioService.alterarSenha(alteraSenhaDTO));
-    }
-
     @GetMapping("/usuario-logado")
-    public String usuarioLogado() {
-        return usuarioService.buscarUsuarioLogado();
+    public UsuarioLoginDTO usuarioLogado() throws RegraDeNegocioException {
+        return usuarioService.getUsuarioLogado(usuarioService.getIdLoggedUser());
     }
 }

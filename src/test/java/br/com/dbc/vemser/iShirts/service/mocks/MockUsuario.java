@@ -63,7 +63,6 @@ public class MockUsuario {
     public static UsuarioUpdateDTO retornarUsuarioUpdate(){
         UsuarioUpdateDTO usuarioUpdateDTO = new UsuarioUpdateDTO();
         usuarioUpdateDTO.setEmail("testeatualiza@dbccompany.com.br");
-        usuarioUpdateDTO.setSenha("senha321");
         return usuarioUpdateDTO;
     }
 
