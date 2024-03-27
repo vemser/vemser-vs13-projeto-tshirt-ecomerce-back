@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -42,6 +43,7 @@ public class EnderecoCreateDTO {
 
     @Schema(description = "cep do endereço ", example = "0616158", required = true)
     @NotNull(message = "por favor preencha o cep corretamente")
+    @Size(max = 7, message = "O número máximo de caracteres é 7.")
     private String cep;
 
     @Schema(description = "cidade do endereço ", example = "Barueri", required = true)
