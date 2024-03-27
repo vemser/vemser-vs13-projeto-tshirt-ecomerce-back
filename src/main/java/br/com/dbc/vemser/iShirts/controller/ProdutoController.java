@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
 @Validated
 
 @Tag(name = "Produto", description = "Controller responsável pelas operações relacionadas à produto.")
-public class ProdutoController {
+public class ProdutoController implements ProdutoControllerInterface {
 
     private final ProdutoService produtoService;
 

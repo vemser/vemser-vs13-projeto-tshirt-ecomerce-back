@@ -149,11 +149,12 @@ class EnderecoServiceTest {
     @Test
     void deveriaDeletarEndereco() throws RegraDeNegocioException {
         Endereco endereco = MockEndereco.retornaEntity();
+        Integer idEndereco = new Random().nextInt();
 
         when(enderecoRepository.findById(anyInt())).thenReturn(Optional.of(endereco));
 
-        enderecoService.deletar(new Random().nextInt());
+        enderecoService.deletar(idEndereco);
 
-        verify(enderecoRepository, times(1)).delete(endereco);
+        verify(enderecoRepository, times(1)).deleteById(anyInt());
     }
 }
