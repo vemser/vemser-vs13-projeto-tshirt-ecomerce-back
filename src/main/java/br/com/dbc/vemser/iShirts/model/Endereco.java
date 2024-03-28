@@ -59,11 +59,11 @@ public class Endereco {
     @Column(name = "pais")
     private String pais;
 
-    @Column(name = "criado",updatable = false,insertable = false)
+    @Column(name = "criado",updatable = false)
     @CreationTimestamp
     private Timestamp criadoEm;
 
-    @Column(name = "editado",updatable = false,insertable = false)
+    @Column(name = "editado")
     @UpdateTimestamp
     private Timestamp editadoEm;
 
