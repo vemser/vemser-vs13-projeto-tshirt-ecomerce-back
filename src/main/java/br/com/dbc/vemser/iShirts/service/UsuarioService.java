@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
+import br.com.dbc.vemser.iShirts.dto.cargo.CargoDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.*;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Cargo;
@@ -93,31 +94,30 @@ public class UsuarioService {
 
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
 
-        Set<Cargo> cargos = usuario.getCargos();
-        if (cargos == null || cargos.isEmpty()) {
+        Set<CargoDTO> cargosDTO = usuario.getCargos();
+        if (cargosDTO == null || cargosDTO.isEmpty()) {
             throw new RegraDeNegocioException("Nenhum cargo especificado para o novo usuário");
         }
 
-        for (Cargo cargo : cargos) {
-            Integer cargoId = cargo.getIdCargo();
-            if (cargoId == null) {
-                throw new RegraDeNegocioException("ID do cargo não especificado");
-            }
-
-            Cargo cargoExistente = cargoService.buscarCargoPorId(cargoId);
-            if (cargoExistente == null) {
-                throw new RegraDeNegocioException("Cargo com ID " + cargoId + " não encontrado");
+        Set<Cargo> cargos = new HashSet<>();
+        for (CargoDTO cargoDTO : cargosDTO) {
+            Cargo cargoExistente = cargoService.buscarCargoPorDescricao(cargoDTO.getDescricao());
+            if (cargoExistente != null) {
+                cargos.add(cargoExistente);
+            } else {
+                throw new RegraDeNegocioException("Cargo com descrição " + cargoDTO.getDescricao() + " não encontrado");
             }
         }
 
         Usuario novoUsuario = createParaUsuario(usuario);
         novoUsuario.setAtivo(Ativo.ATIVO);
         novoUsuario.setSenha(senhaCriptografada);
-        novoUsuario.setCargos(new HashSet<>(cargos));
+        novoUsuario.setCargos(cargos);
 
         usuarioRepository.save(novoUsuario);
         return converterParaUsuarioDTOComId(novoUsuario);
     }
+
     public UsuarioDTO criarCliente(ClienteCreateDTO usuario) throws RegraDeNegocioException {
         validarDadosClienteCreate(usuario);
         verificarExistenciaEmail(usuario.getEmail());
@@ -157,8 +157,11 @@ public class UsuarioService {
             Usuario usuario = usuarioOptional.get();
             if (usuario.getAtivo() != Ativo.INATIVO) {
                 usuario.setAtivo(Ativo.INATIVO);
+
                 Pessoa pessoa = usuario.getPessoa();
-                pessoa.setAtivo(String.valueOf(Ativo.INATIVO.getIndex()));
+                if (pessoa != null) {
+                    pessoa.setAtivo(String.valueOf(Ativo.INATIVO.getIndex()));
+                }
                 usuarioRepository.save(usuario);
             } else {
                 throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO_INATIVO);
@@ -167,6 +170,7 @@ public class UsuarioService {
             throw new RegraDeNegocioException(MSG_USUARIO_NAO_ENCONTRADO);
         }
     }
+
 
     public UsuarioDTO alterarSenha(AlteraSenhaDTO alteraSenhaDTO) throws Exception {
         Optional<Usuario> usuarioAtualizar = buscarUsuarioPorEmail(alteraSenhaDTO.getEmail());

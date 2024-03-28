@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.dto.usuario;
 
 
+import br.com.dbc.vemser.iShirts.dto.cargo.CargoDTO;
 import br.com.dbc.vemser.iShirts.model.Cargo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,7 @@ public class UsuarioCreateDTO {
     private String senha;
 
     @Schema(description = "Conjunto de cargos do Usuário", required = true,
-            example = "[{\"idCargo\": 1, \"descricao\": \"ROLE_CLIENTE\"}]")
-    private Set<Cargo> cargos;
+            example = "[{\"descricao\": \"ROLE_CLIENTE\"}]")
+    private Set<CargoDTO> cargos;
 
 }

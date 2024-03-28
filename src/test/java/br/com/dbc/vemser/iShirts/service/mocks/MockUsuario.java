@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.service.mocks;
 
 import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
+import br.com.dbc.vemser.iShirts.dto.cargo.CargoDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
@@ -48,7 +49,7 @@ public class MockUsuario {
         UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO();
         usuarioCreateDTO.setEmail("teste@dbccompany.com.br");
         usuarioCreateDTO.setSenha("senha123");
-        usuarioCreateDTO.setCargos(Set.of(retornaCargo()));
+        usuarioCreateDTO.setCargos(Set.of(retornaCargoDTO()));
         return usuarioCreateDTO;
     }
 
@@ -70,6 +71,13 @@ public class MockUsuario {
         Cargo cargo = new Cargo();
         cargo.setIdCargo(1);
         cargo.setDescricao("Admin");
+
+        return cargo;
+    }
+
+    public static CargoDTO retornaCargoDTO(){
+        CargoDTO cargo = new CargoDTO();
+        cargo.setDescricao("ROLE_ADMIN");
 
         return cargo;
     }

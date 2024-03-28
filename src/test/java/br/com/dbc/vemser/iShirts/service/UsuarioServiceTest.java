@@ -1,11 +1,9 @@
 package br.com.dbc.vemser.iShirts.service;
 
 import br.com.dbc.vemser.iShirts.dto.auth.AlteraSenhaDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.ClienteCreateDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.iShirts.dto.usuario.UsuarioUpdateDTO;
+import br.com.dbc.vemser.iShirts.dto.usuario.*;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.iShirts.model.Cargo;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import br.com.dbc.vemser.iShirts.repository.UsuarioRepository;
@@ -126,11 +124,12 @@ class UsuarioServiceTest {
         Usuario usuario = MockUsuario.retornarEntity();
         UsuarioDTO usuarioDTO = MockUsuario.retornarDTOPorEntity(usuario);
         UsuarioCreateDTO usuarioCreateDTO = MockUsuario.retornarUsuarioCreateDTO();
+        Cargo cargo = MockUsuario.retornaCargo();
 
         when(objectMapper.convertValue(usuarioCreateDTO, Usuario.class)).thenReturn(usuario);
         when(objectMapper.convertValue(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
         when(passwordEncoder.encode(anyString())).thenReturn("SenhaCriptografada");
-        when(cargoService.buscarCargoPorId(any())).thenReturn(MockUsuario.retornaCargo());
+        when(cargoService.buscarCargoPorDescricao(anyString())).thenReturn(cargo);
 
         UsuarioDTO usuarioDTOResponse = usuarioService.criarUsuario(usuarioCreateDTO);
 
@@ -139,7 +138,6 @@ class UsuarioServiceTest {
                 () -> assertEquals(usuarioDTOResponse, usuarioDTO)
         );
     }
-
 
     @Test
     @DisplayName("Não deve criar usuario com email ou senha inválidos")
@@ -318,19 +316,5 @@ class UsuarioServiceTest {
         assertEquals(0, idUsuario);
     }
 
-    //TODO ARRUMAR O TESTE
-    @Test
-    void testBuscarUsuarioLogado() throws RegraDeNegocioException {
-//        Authentication authentication = new UsernamePasswordAuthenticationToken("username", "password");
-//        SecurityContext securityContext = mock(SecurityContext.class);
-//
-//        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        SecurityContextHolder.setContext(securityContext);
-//
-//        Usuario usuarioLogado = usuarioService.buscarUsuarioLogado(2);
-//
-//        assertNotNull(usuarioLogado);
-//        assertEquals("username", usuarioLogado);
-    }
 }
 
