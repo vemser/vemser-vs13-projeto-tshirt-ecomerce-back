@@ -8,8 +8,10 @@ import br.com.dbc.vemser.iShirts.service.ProdutoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,7 @@ public class ProdutoController implements ProdutoControllerInterface {
     private final ProdutoService produtoService;
 
     @GetMapping("/todos-produtos")
-    public ResponseEntity<Page<ProdutoDTO>> listarProdutos(@PageableDefault(value = 5, page = 0, sort = "criado") Pageable page){
+    public ResponseEntity<Page<ProdutoDTO>> listarProdutos(@ParameterObject @PageableDefault(value = 5, page = 0, sort = {"criado"}, direction = Sort.Direction.DESC) Pageable page){
         return new ResponseEntity<>(produtoService.listarProdutos(page), HttpStatus.OK);
     }
 

@@ -6,6 +6,7 @@ import br.com.dbc.vemser.iShirts.dto.pedido.PedidoDTO;
 import br.com.dbc.vemser.iShirts.dto.pedido.PedidoUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.service.PedidoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 @Validated
 @AllArgsConstructor
 @RequestMapping("/pedido")
+@Tag(name = "Pedido", description = "Controller responsável pelas operações relacionadas à Pedido.")
 public class PedidoController {
     private PedidoService pedidoService;
     @GetMapping("/{idPedido}")

@@ -27,6 +27,7 @@ public class PessoaService {
     private final PessoaRepository pessoaRepository;
     private final ObjectMapper objectMapper;
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     private static final String CPF_INVALIDO = "CPF inválido";
     private static final String CPF_EXISTENTE = "CPF já existente";
@@ -49,7 +50,7 @@ public class PessoaService {
         pessoa.setDataNascimento(pessoaCreateDTO.getDataNascimento());
         pessoa.setPreferencia(pessoaCreateDTO.getPreferencia());
         pessoa.setAtivo(pessoaCreateDTO.getAtivo());
-        pessoa.setIdUsuario(pessoaCreateDTO.getIdUsuario());
+        pessoa.setIdUsuario(usuarioService.getIdLoggedUser());
 
         return pessoaRepository.save(pessoa);
     }

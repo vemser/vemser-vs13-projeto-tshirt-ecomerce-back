@@ -43,6 +43,7 @@ public class Usuario implements UserDetails {
     )
     private Set<Cargo> cargos;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "usuario")
     private Pessoa pessoa;
 

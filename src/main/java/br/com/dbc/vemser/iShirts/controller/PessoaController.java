@@ -6,6 +6,7 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.service.PessoaService;
+import br.com.dbc.vemser.iShirts.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 public class PessoaController implements PessoaControllerInterface {
 
     private final PessoaService pessoaService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<Page<Pessoa>> buscarTodasPessoas() throws RegraDeNegocioException {
@@ -50,25 +52,37 @@ public class PessoaController implements PessoaControllerInterface {
         return new ResponseEntity<>(pessoaCadastrada, HttpStatus.CREATED);
     }
 
-    @PutMapping("/atualizar/{idPessoa}")
-    public ResponseEntity<Pessoa> atualizarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa, @RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException {
-        Pessoa pessoaAtualizada = pessoaService.atualizarPessoa(idPessoa, pessoaDTO);
+    @PutMapping("/atualizar")
+    public ResponseEntity<Pessoa> atualizarPessoa(@RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException {
+        Pessoa pessoaAtualizada = pessoaService.atualizarPessoa(usuarioService.getIdLoggedUser(), pessoaDTO);
         return new ResponseEntity<>(pessoaAtualizada, HttpStatus.OK);
     }
 
+    @PutMapping("/inativar-logada")
+    public ResponseEntity<Void> inativarPessoaLogada() throws RegraDeNegocioException {
+        pessoaService.inativarPessoa(usuarioService.getIdLoggedUser());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/ativar-logada")
+    public ResponseEntity<Void> ativarPessoaLogada() throws RegraDeNegocioException {
+        pessoaService.ativarPessoa(usuarioService.getIdLoggedUser());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PutMapping("/inativar/{idPessoa}")
-    public ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
+    public ResponseEntity<Void> inativarPessoaPorId(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
         pessoaService.inativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/ativar/{idPessoa}")
-    public ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
+    public ResponseEntity<Void> ativarPessoaPorId(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
         pessoaService.ativarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/{idPessoa}")
+    @DeleteMapping("/deletar/{idPessoa}")
     public ResponseEntity<Void> deletarPessoa(@PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException {
         pessoaService.deletarPessoa(idPessoa);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

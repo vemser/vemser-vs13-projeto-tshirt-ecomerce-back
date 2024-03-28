@@ -10,6 +10,7 @@ import br.com.dbc.vemser.iShirts.dto.pessoa.PessoaUpdateDTO;
 import br.com.dbc.vemser.iShirts.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.iShirts.model.Pessoa;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -65,9 +66,9 @@ public interface PessoaControllerInterface {
             @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<Pessoa> atualizarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa, @RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException;
+    ResponseEntity<Pessoa> atualizarPessoa(@RequestBody PessoaUpdateDTO pessoaDTO) throws RegraDeNegocioException;
 
-    @Operation(summary = "Inativar pessoa", description = "Inativar uma pessoa no sistema.")
+    @Operation(summary = "Inativar pessoa Logada - usado por CLIENTE", description = "Inativar uma pessoa no sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Pessoa inativada com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
@@ -75,9 +76,9 @@ public interface PessoaControllerInterface {
             @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<Void> inativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
+    ResponseEntity<Void> inativarPessoaLogada() throws RegraDeNegocioException;
 
-    @Operation(summary = "Ativar pessoa", description = "Ativar uma pessoa no sistema.")
+    @Operation(summary = "Ativar pessoa Logada - usado por CLIENTE", description = "Ativar uma pessoa no sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Pessoa ativada com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
@@ -85,5 +86,36 @@ public interface PessoaControllerInterface {
             @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
     })
-    ResponseEntity<Void> ativarPessoa(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
+    ResponseEntity<Void> ativarPessoaLogada() throws RegraDeNegocioException;
+
+    @Operation(summary = "Inativar pessoa por Id - usado por ADMIN", description = "Inativar uma pessoa no sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pessoa inativada com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
+            @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
+    })
+    ResponseEntity<Void> inativarPessoaPorId(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
+
+    @Operation(summary = "Ativar pessoa por Id - usado por ADMIN", description = "Ativar uma pessoa no sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pessoa ativada com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
+            @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
+    })
+    ResponseEntity<Void> ativarPessoaPorId(@Valid @PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
+
+    @Operation(summary = "Deletar pessoa por Id - usado por ADMIN", description = "Deletar uma pessoa do sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Pessoa deletada com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Erro na inserção de dados."),
+            @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso."),
+            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada."),
+            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção.")
+    })
+    @DeleteMapping("/deletar/{idPessoa}")
+    public ResponseEntity<Void> deletarPessoa(@PathVariable("idPessoa") Integer idPessoa) throws RegraDeNegocioException;
 }

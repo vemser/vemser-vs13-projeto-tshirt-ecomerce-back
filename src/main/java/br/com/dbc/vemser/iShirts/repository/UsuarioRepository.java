@@ -4,6 +4,8 @@ import br.com.dbc.vemser.iShirts.model.Pessoa;
 import br.com.dbc.vemser.iShirts.model.Usuario;
 import br.com.dbc.vemser.iShirts.model.enums.Ativo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,8 +13,6 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     List<Usuario> findByAtivo(Ativo ativo);
-
-    List<Usuario> findAllByAtivo(Ativo ativo);
 
     Optional<Usuario> findByIdUsuarioAndAtivo(Integer idUsuario, Ativo ativo);
 
@@ -22,6 +22,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByEmail(String email);
 
-    List<Usuario> findByPessoa(Pessoa pessoa);
+    @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.cargos WHERE u.id = :id")
+    Optional<Usuario> findByIdWithCargos(@Param("id") Integer id);
 }
 

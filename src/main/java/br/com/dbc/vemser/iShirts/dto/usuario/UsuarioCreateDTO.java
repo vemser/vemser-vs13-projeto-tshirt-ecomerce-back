@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.iShirts.dto.usuario;
 
 
+import br.com.dbc.vemser.iShirts.dto.cargo.CargoDTO;
 import br.com.dbc.vemser.iShirts.model.Cargo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,8 @@ public class UsuarioCreateDTO {
     @Pattern(regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).*$", message = "A senha deve conter pelo menos 1 caractere especial")
     private String senha;
 
-    private Set<Cargo> cargos;
+    @Schema(description = "Conjunto de cargos do Usuário", required = true,
+            example = "[{\"descricao\": \"ROLE_CLIENTE\"}]")
+    private Set<CargoDTO> cargos;
 
 }

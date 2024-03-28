@@ -39,7 +39,6 @@ public class MockPessoa {
         pessoaCreateDTO.setDataNascimento(new Date());
         pessoaCreateDTO.setPreferencia("Preferencia");
         pessoaCreateDTO.setAtivo("Ativo");
-        pessoaCreateDTO.setIdUsuario(1);
         return pessoaCreateDTO;
     }
     public static PessoaUpdateDTO retornarPessoaUpdateDTO(){
